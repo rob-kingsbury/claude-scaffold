@@ -125,6 +125,8 @@ Hooks provide deterministic automation at specific points in Claude Code's lifec
 | Hook | Event | Purpose |
 |------|-------|---------|
 | **branch-protection.js** | PreToolUse | Block dangerous git operations on main |
+| **pii-blocker.js** | PreToolUse | Block PII (SSNs, credit cards, phones, emails) |
+| **secrets-blocker.js** | PreToolUse | Block secrets (API keys, passwords, tokens) |
 | **auto-format.sh** | PostToolUse | Format code after edits |
 | **run-tests.sh** | PostToolUse | Run related tests after changes |
 | **lint-check.js** | PreToolUse | Run linter before edits |

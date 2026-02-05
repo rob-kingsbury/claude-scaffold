@@ -90,6 +90,8 @@
 - [ ] No secrets in git history
 - [ ] `.env.example` has placeholder values only
 
+**Automated protection:** Enable `pii-blocker.js` and `secrets-blocker.js` hooks to block accidental commits of PII and secrets. See `library/hooks/` for configuration.
+
 ---
 
 ## Quick Commands
