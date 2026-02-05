@@ -6,7 +6,7 @@ Compiled from research agents + ecosystem knowledge. Prioritized by value/effort
 
 ## Skills Ideas
 
-### Currently Have (34 skills)
+### Currently Have (35 skills)
 - [x] session-start, handoff, agents (Session Management)
 - [x] plan, personas, frontend-design, interface-design, research (Planning & Design)
 - [x] tdd, debug, fix-issue, testing, refactor (Development)
@@ -14,6 +14,7 @@ Compiled from research agents + ecosystem knowledge. Prioritized by value/effort
 - [x] api-docs, db-migrate, changelog, adr, env (Documentation & Config)
 - [x] git-workflow, pr-create, deploy, docker, ci-cd, github-actions (Git & Deploy)
 - [x] roadmap (Project Management)
+- [x] autopilot (Automation)
 - [x] auth, deps, error-handling (Security & Reliability)
 - [x] i18n (Internationalization)
 

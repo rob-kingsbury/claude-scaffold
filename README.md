@@ -127,6 +127,11 @@ your-project/
 |-------|-------------|
 | **roadmap** | Generate roadmaps from GitHub issues and milestones |
 
+### Automation
+| Skill | Description |
+|-------|-------------|
+| **autopilot** | Autonomous task execution - gather tasks from issues/TODOs, run unattended via `claude -p` |
+
 ### Security & Reliability
 | Skill | Description |
 |-------|-------------|
