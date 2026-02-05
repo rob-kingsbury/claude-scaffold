@@ -120,6 +120,12 @@ your-project/
 | **deploy** | Deployment preparation, checklists, and rollback |
 | **docker** | Dockerfiles, docker-compose, container optimization |
 | **ci-cd** | GitHub Actions, GitLab CI pipeline configuration |
+| **github-actions** | CI/CD workflow templates (test, build, deploy, release) |
+
+### Project Management
+| Skill | Description |
+|-------|-------------|
+| **roadmap** | Generate roadmaps from GitHub issues and milestones |
 
 ## Hooks Library
 
@@ -137,6 +143,7 @@ Hooks provide deterministic automation at specific points in Claude Code's lifec
 | **security-scan.js** | PreToolUse | Scan for security issues |
 | **file-size-check.js** | PreToolUse | Warn about large files |
 | **agent-notify.js** | PostToolUse | Desktop notifications + history when agents complete |
+| **type-check.js** | PreToolUse | TypeScript type check before edits (advisory) |
 
 See `library/hooks/README.md` for configuration details.
 
@@ -150,6 +157,7 @@ See `library/hooks/README.md` for configuration details.
 | **development-workflow.md** | Session management, commits, issues |
 | **security-checklist.md** | OWASP-aligned security checks |
 | **thinking-mode.md** | When and how to invoke deep thinking |
+| **api-design.md** | RESTful conventions, error formats, versioning |
 
 ## MCP Server Recommendations
 

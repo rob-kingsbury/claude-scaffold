@@ -6,13 +6,14 @@ Compiled from research agents + ecosystem knowledge. Prioritized by value/effort
 
 ## Skills Ideas
 
-### Currently Have (28 skills)
+### Currently Have (30 skills)
 - [x] session-start, handoff, agents (Session Management)
 - [x] plan, personas, frontend-design, interface-design, research (Planning & Design)
 - [x] tdd, debug, fix-issue, testing, refactor (Development)
 - [x] audit, code-review, simplify, performance, accessibility (Quality)
 - [x] api-docs, db-migrate, changelog, adr, env (Documentation & Config)
-- [x] git-workflow, pr-create, deploy, docker, ci-cd (Git & Deploy)
+- [x] git-workflow, pr-create, deploy, docker, ci-cd, github-actions (Git & Deploy)
+- [x] roadmap (Project Management)
 
 ### High Priority (Would use frequently)
 
@@ -20,7 +21,7 @@ Compiled from research agents + ecosystem knowledge. Prioritized by value/effort
 |-------|-------------|--------|
 | ~~**changelog**~~ | ~~Auto-generate CHANGELOG.md from commits (conventional commits)~~ | DONE |
 | ~~**adr**~~ | ~~Architecture Decision Records - document why decisions were made~~ | DONE |
-| **roadmap** | Project roadmap generation, milestone tracking, priority visualization | Low |
+| ~~**roadmap**~~ | ~~Project roadmap generation, milestone tracking, priority visualization~~ | DONE |
 | **deps** | Dependency audit, updates, security vulnerabilities (npm audit, etc.) | Medium |
 | ~~**env**~~ | ~~Environment setup - .env templates, validation, documentation~~ | DONE |
 | **secrets** | Secret detection, rotation reminders, vault integration | Medium |
@@ -29,7 +30,7 @@ Compiled from research agents + ecosystem knowledge. Prioritized by value/effort
 | **seo** | SEO audit checklist, meta tags, structured data | Low |
 | **analytics** | Event tracking setup (GA4, Mixpanel, Posthog patterns) | Low |
 | **error-handling** | Error boundary patterns, logging, monitoring setup | Medium |
-| **github-actions** | CI/CD workflow templates (test, build, deploy, release) | Medium |
+| ~~**github-actions**~~ | ~~CI/CD workflow templates (test, build, deploy, release)~~ | DONE |
 
 ### Medium Priority (Useful for some projects)
 
@@ -104,7 +105,7 @@ Compiled from research agents + ecosystem knowledge. Prioritized by value/effort
 
 ## Hook Ideas
 
-### Currently Have (10 hooks)
+### Currently Have (11 hooks)
 - [x] branch-protection.js (PreToolUse)
 - [x] pii-blocker.js (PreToolUse) - Block PII (SSNs, credit cards, phones, emails)
 - [x] secrets-blocker.js (PreToolUse) - Block secrets (API keys, passwords, tokens)
@@ -115,12 +116,13 @@ Compiled from research agents + ecosystem knowledge. Prioritized by value/effort
 - [x] security-scan.js (PreToolUse)
 - [x] file-size-check.js (PreToolUse)
 - [x] agent-notify.js (PostToolUse)
+- [x] type-check.js (PreToolUse) - TypeScript check before edits
 
 ### Ideas to Add
 
 | Hook | Event | Purpose |
 |------|-------|---------|
-| **type-check.js** | PreToolUse | Run TypeScript check before edits |
+| ~~**type-check.js**~~ | ~~PreToolUse~~ | ~~Run TypeScript check before edits~~ DONE |
 | **deps-check.js** | PostToolUse | Check for new dependency vulnerabilities |
 | **build-verify.js** | PostToolUse | Verify build still works after changes |
 | **coverage-check.js** | PostToolUse | Warn if test coverage drops |
@@ -161,19 +163,20 @@ Compiled from research agents + ecosystem knowledge. Prioritized by value/effort
 
 ## Rule Ideas
 
-### Currently Have (6 rules)
+### Currently Have (7 rules)
 - [x] code-architecture.md
 - [x] css-architecture.md
 - [x] database-queries.md
 - [x] development-workflow.md
 - [x] security-checklist.md
 - [x] thinking-mode.md
+- [x] api-design.md
 
 ### Ideas to Add
 
 | Rule | Purpose |
 |------|---------|
-| **api-design.md** | RESTful conventions, error formats, versioning |
+| ~~**api-design.md**~~ | ~~RESTful conventions, error formats, versioning~~ DONE |
 | **testing-strategy.md** | What to test, coverage targets, mocking |
 | **error-handling.md** | Error types, logging levels, user messages |
 | **performance-budget.md** | Bundle size, load time, Core Web Vitals |
@@ -264,10 +267,10 @@ EFFORT                      │                      │  EFFORT
 - [x] ~~env~~ DONE - Environment setup templates
 
 ### Next (High Value)
-- [ ] **roadmap** - Project roadmap from GitHub issues
-- [ ] **github-actions** - CI/CD workflow templates
-- [ ] **type-check hook** - TypeScript check before edits
-- [ ] **api-design rule** - RESTful conventions doc
+- [x] ~~roadmap~~ DONE - Project roadmap from GitHub issues
+- [x] ~~github-actions~~ DONE - CI/CD workflow templates
+- [x] ~~type-check hook~~ DONE - TypeScript check before edits
+- [x] ~~api-design rule~~ DONE - RESTful conventions doc
 
 ### Later (More Effort)
 - [ ] **auth** - Authentication patterns

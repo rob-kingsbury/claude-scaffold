@@ -86,6 +86,7 @@ Or create hooks manually in `.claude/settings.json`.
 - `file-size-check.js` - Warn/block large files (>100KB warn, >500KB block)
 - `lint-check.js` - Run linter before edits (advisory)
 - `security-scan.js` - Scan for security issues (advisory)
+- `type-check.js` - TypeScript type check before edits (advisory)
 
 ### Post-Tool Hooks (run after action)
 - `auto-format.sh` - Format code after edits
