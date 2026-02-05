@@ -6,7 +6,7 @@ Compiled from research agents + ecosystem knowledge. Prioritized by value/effort
 
 ## Skills Ideas
 
-### Currently Have (33 skills)
+### Currently Have (34 skills)
 - [x] session-start, handoff, agents (Session Management)
 - [x] plan, personas, frontend-design, interface-design, research (Planning & Design)
 - [x] tdd, debug, fix-issue, testing, refactor (Development)
@@ -15,6 +15,7 @@ Compiled from research agents + ecosystem knowledge. Prioritized by value/effort
 - [x] git-workflow, pr-create, deploy, docker, ci-cd, github-actions (Git & Deploy)
 - [x] roadmap (Project Management)
 - [x] auth, deps, error-handling (Security & Reliability)
+- [x] i18n (Internationalization)
 
 ### High Priority (Would use frequently)
 
@@ -37,7 +38,7 @@ Compiled from research agents + ecosystem knowledge. Prioritized by value/effort
 
 | Skill | Description | Effort |
 |-------|-------------|--------|
-| **i18n** | Internationalization setup, translation workflow | Medium |
+| ~~**i18n**~~ | ~~Internationalization setup, translation workflow~~ | DONE |
 | **email** | Email templates (transactional, marketing) | Low |
 | **feature-flags** | Feature flag setup (LaunchDarkly, custom) | Medium |
 | **caching** | Caching strategies, Redis patterns, CDN setup | Medium |

@@ -134,6 +134,11 @@ your-project/
 | **deps** | Dependency audit, updates, security vulnerabilities |
 | **error-handling** | Error boundaries, logging, monitoring, user messages |
 
+### Internationalization
+| Skill | Description |
+|-------|-------------|
+| **i18n** | Multi-language support, translation workflow, RTL, pluralization |
+
 ## Hooks Library
 
 Hooks provide deterministic automation at specific points in Claude Code's lifecycle.
