@@ -1,0 +1,65 @@
+{
+  "queue": [
+    {
+      "topic": "obra/superpowers three-command workflow",
+      "priority": "high",
+      "addedAt": "2026-02-05T12:00:00Z",
+      "source": "research: Claude Code skill ideas",
+      "depth": 0,
+      "attempts": 0
+    },
+    {
+      "topic": "Severance memory injection pattern",
+      "priority": "high",
+      "addedAt": "2026-02-05T12:00:00Z",
+      "source": "research: Claude Code skill ideas",
+      "depth": 0,
+      "attempts": 0
+    },
+    {
+      "topic": "Scaffdog markdown templates for LLMs",
+      "priority": "medium",
+      "addedAt": "2026-02-05T12:00:00Z",
+      "source": "research: scaffolding tools",
+      "depth": 0,
+      "attempts": 0
+    },
+    {
+      "topic": "TDD Guard hook patterns",
+      "priority": "medium",
+      "addedAt": "2026-02-05T12:00:00Z",
+      "source": "research: Claude Code skill ideas",
+      "depth": 0,
+      "attempts": 0
+    },
+    {
+      "topic": "MCP Tasks protocol async patterns",
+      "priority": "medium",
+      "addedAt": "2026-02-05T12:00:00Z",
+      "source": "research: MCP servers",
+      "depth": 0,
+      "attempts": 0
+    },
+    {
+      "topic": "Cross-platform skill compatibility (Cursor, Copilot, Gemini)",
+      "priority": "low",
+      "addedAt": "2026-02-05T12:00:00Z",
+      "source": "research: VoltAgent patterns",
+      "depth": 0,
+      "attempts": 0
+    }
+  ],
+  "completed": [
+    {
+      "topic": "Claude Code skill ideas for developer productivity",
+      "completedAt": "2026-02-05T12:00:00Z",
+      "savedTo": ".claude/knowledge/skill-ecosystem.md",
+      "tangentsQueued": 6
+    }
+  ],
+  "stats": {
+    "totalResearched": 1,
+    "totalTangentsDiscovered": 6,
+    "avgDepth": 0
+  }
+}

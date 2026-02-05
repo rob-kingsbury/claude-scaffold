@@ -74,11 +74,13 @@ your-project/
 |-------|-------------|
 | **session-start** | Initialize work sessions, load context, check issues |
 | **handoff** | End-of-session cleanup, commit, and context preservation |
+| **agents** | Monitor background agents: status, wait, logs, history |
 
 ### Planning & Design
 | Skill | Description |
 |-------|-------------|
 | **plan** | Strategic planning with complexity assessment (supports deep thinking) |
+| **research** | Research with parallel agents, track topics for later |
 | **personas** | Create UX personas for testing and user stories |
 | **frontend-design** | Distinctive, production-grade UI avoiding generic AI aesthetics |
 | **interface-design** | Systematic design tokens, consistency, and component patterns |
@@ -129,6 +131,7 @@ Hooks provide deterministic automation at specific points in Claude Code's lifec
 | **commit-message-check.js** | PreToolUse | Enforce conventional commits |
 | **security-scan.js** | PreToolUse | Scan for security issues |
 | **file-size-check.js** | PreToolUse | Warn about large files |
+| **agent-notify.js** | PostToolUse | Desktop notifications + history when agents complete |
 
 See `library/hooks/README.md` for configuration details.
 
