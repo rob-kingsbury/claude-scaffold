@@ -6,7 +6,7 @@ Compiled from research agents + ecosystem knowledge. Prioritized by value/effort
 
 ## Skills Ideas
 
-### Currently Have (30 skills)
+### Currently Have (33 skills)
 - [x] session-start, handoff, agents (Session Management)
 - [x] plan, personas, frontend-design, interface-design, research (Planning & Design)
 - [x] tdd, debug, fix-issue, testing, refactor (Development)
@@ -14,6 +14,7 @@ Compiled from research agents + ecosystem knowledge. Prioritized by value/effort
 - [x] api-docs, db-migrate, changelog, adr, env (Documentation & Config)
 - [x] git-workflow, pr-create, deploy, docker, ci-cd, github-actions (Git & Deploy)
 - [x] roadmap (Project Management)
+- [x] auth, deps, error-handling (Security & Reliability)
 
 ### High Priority (Would use frequently)
 
@@ -22,14 +23,14 @@ Compiled from research agents + ecosystem knowledge. Prioritized by value/effort
 | ~~**changelog**~~ | ~~Auto-generate CHANGELOG.md from commits (conventional commits)~~ | DONE |
 | ~~**adr**~~ | ~~Architecture Decision Records - document why decisions were made~~ | DONE |
 | ~~**roadmap**~~ | ~~Project roadmap generation, milestone tracking, priority visualization~~ | DONE |
-| **deps** | Dependency audit, updates, security vulnerabilities (npm audit, etc.) | Medium |
+| ~~**deps**~~ | ~~Dependency audit, updates, security vulnerabilities (npm audit, etc.)~~ | DONE |
 | ~~**env**~~ | ~~Environment setup - .env templates, validation, documentation~~ | DONE |
 | **secrets** | Secret detection, rotation reminders, vault integration | Medium |
 | **migrations** | Database migration generation and verification | Medium |
 | **storybook** | Component documentation and visual testing setup | Medium |
 | **seo** | SEO audit checklist, meta tags, structured data | Low |
 | **analytics** | Event tracking setup (GA4, Mixpanel, Posthog patterns) | Low |
-| **error-handling** | Error boundary patterns, logging, monitoring setup | Medium |
+| ~~**error-handling**~~ | ~~Error boundary patterns, logging, monitoring setup~~ | DONE |
 | ~~**github-actions**~~ | ~~CI/CD workflow templates (test, build, deploy, release)~~ | DONE |
 
 ### Medium Priority (Useful for some projects)
@@ -273,9 +274,9 @@ EFFORT                      │                      │  EFFORT
 - [x] ~~api-design rule~~ DONE - RESTful conventions doc
 
 ### Later (More Effort)
-- [ ] **auth** - Authentication patterns
-- [ ] **deps** - Dependency audit skill
-- [ ] **error-handling** - Error boundary patterns
+- [x] ~~auth~~ DONE - Authentication patterns
+- [x] ~~deps~~ DONE - Dependency audit skill
+- [x] ~~error-handling~~ DONE - Error boundary patterns
 
 ---
 

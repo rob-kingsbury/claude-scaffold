@@ -127,6 +127,13 @@ your-project/
 |-------|-------------|
 | **roadmap** | Generate roadmaps from GitHub issues and milestones |
 
+### Security & Reliability
+| Skill | Description |
+|-------|-------------|
+| **auth** | Authentication patterns - JWT, sessions, OAuth, MFA |
+| **deps** | Dependency audit, updates, security vulnerabilities |
+| **error-handling** | Error boundaries, logging, monitoring, user messages |
+
 ## Hooks Library
 
 Hooks provide deterministic automation at specific points in Claude Code's lifecycle.
