@@ -104,8 +104,10 @@ Compiled from research agents + ecosystem knowledge. Prioritized by value/effort
 
 ## Hook Ideas
 
-### Currently Have (8 hooks)
+### Currently Have (10 hooks)
 - [x] branch-protection.js (PreToolUse)
+- [x] pii-blocker.js (PreToolUse) - Block PII (SSNs, credit cards, phones, emails)
+- [x] secrets-blocker.js (PreToolUse) - Block secrets (API keys, passwords, tokens)
 - [x] auto-format.sh (PostToolUse)
 - [x] run-tests.sh (PostToolUse)
 - [x] lint-check.js (PreToolUse)
@@ -118,8 +120,6 @@ Compiled from research agents + ecosystem knowledge. Prioritized by value/effort
 
 | Hook | Event | Purpose |
 |------|-------|---------|
-| **pii-blocker.js** | PreToolUse | **BLOCK commits/pushes** if PII detected (emails, SSNs, names) |
-| **secrets-blocker.js** | PreToolUse | **BLOCK commits/pushes** if secrets detected (API keys, passwords) |
 | **type-check.js** | PreToolUse | Run TypeScript check before edits |
 | **deps-check.js** | PostToolUse | Check for new dependency vulnerabilities |
 | **build-verify.js** | PostToolUse | Verify build still works after changes |
@@ -214,25 +214,65 @@ Compiled from research agents + ecosystem knowledge. Prioritized by value/effort
 
 ---
 
-## Implementation Priorities
+## Effort vs Impact Grid
 
-### Next Up (Quick Wins)
-1. **pii-blocker hook** - Block commits with PII (HIGH VALUE - prevents disasters)
-2. **secrets-blocker hook** - Block commits with secrets (HIGH VALUE)
-3. **changelog** - Auto-generate from conventional commits
-4. **roadmap** - Project roadmap from GitHub issues/milestones
-5. **adr** - Architecture decision records
-6. **github-actions** - CI/CD workflow templates
+```
+                        HIGH IMPACT
+                            │
+     ┌──────────────────────┼──────────────────────┐
+     │                      │                      │
+     │   DO FIRST           │   PLAN CAREFULLY     │
+     │   (Quick Wins)       │   (Strategic)        │
+     │                      │                      │
+     │   • changelog        │   • auth             │
+     │   • adr              │   • github-actions   │
+     │   • env              │   • deps             │
+     │   • roadmap          │   • error-handling   │
+     │   • seo              │   • migrations       │
+     │   • analytics        │   • storybook        │
+     │   • type-check hook  │   • i18n             │
+     │   • env-sync hook    │   • feature-flags    │
+     │   • api-design rule  │   • caching          │
+     │                      │                      │
+LOW ─┼──────────────────────┼──────────────────────┼─ HIGH
+EFFORT                      │                      │  EFFORT
+     │                      │                      │
+     │   FILL-INS           │   AVOID/DEFER        │
+     │   (If time permits)  │   (Low ROI)          │
+     │                      │                      │
+     │   • email            │   • monorepo         │
+     │   • rate-limiting    │   • payments         │
+     │   • legal            │   • multi-tenant     │
+     │   • bun-elysia stack │   • event-sourcing   │
+     │   • hono stack       │   • voice            │
+     │   • docs-stale hook  │   • mobile stacks    │
+     │                      │   • desktop stacks   │
+     │                      │   • graphql          │
+     │                      │                      │
+     └──────────────────────┼──────────────────────┘
+                            │
+                        LOW IMPACT
+```
+
+## Implementation Queue
+
+### Now (Quick Wins)
+- [x] ~~pii-blocker hook~~ DONE
+- [x] ~~secrets-blocker hook~~ DONE
+- [ ] **changelog** - Auto-generate from conventional commits
+- [ ] **adr** - Architecture decision records
+- [ ] **env** - Environment setup templates
+
+### Next (High Value)
+- [ ] **roadmap** - Project roadmap from GitHub issues
+- [ ] **github-actions** - CI/CD workflow templates
+- [ ] **type-check hook** - TypeScript check before edits
+- [ ] **api-design rule** - RESTful conventions doc
 
 ### Later (More Effort)
-1. **auth** - Authentication patterns (complex, high value)
-2. **monorepo** - Turborepo/Nx patterns
-3. **payments** - Stripe integration patterns
-
-### Maybe (Niche)
-1. Framework-specific stacks (Vue, Svelte, etc.)
-2. Mobile stacks (Expo, Flutter)
-3. Desktop stacks (Electron, Tauri)
+- [ ] **auth** - Authentication patterns
+- [ ] **deps** - Dependency audit skill
+- [ ] **error-handling** - Error boundary patterns
 
 ---
 
