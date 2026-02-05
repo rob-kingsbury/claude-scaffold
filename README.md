@@ -79,6 +79,7 @@ your-project/
 | Skill | Description |
 |-------|-------------|
 | **plan** | Strategic planning with complexity assessment (supports deep thinking) |
+| **personas** | Create UX personas for testing and user stories |
 | **frontend-design** | Distinctive, production-grade UI avoiding generic AI aesthetics |
 | **interface-design** | Systematic design tokens, consistency, and component patterns |
 
@@ -112,6 +113,8 @@ your-project/
 | **git-workflow** | Branching strategy, conventional commits, PR flow |
 | **pr-create** | Create well-structured pull requests |
 | **deploy** | Deployment preparation, checklists, and rollback |
+| **docker** | Dockerfiles, docker-compose, container optimization |
+| **ci-cd** | GitHub Actions, GitLab CI pipeline configuration |
 
 ## Hooks Library
 
