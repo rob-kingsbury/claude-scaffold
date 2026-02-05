@@ -30,7 +30,8 @@ async function main() {
     }
 
     const event = JSON.parse(input);
-    const command = event.toolInput?.command || '';
+    // Claude Code uses snake_case for hook event properties
+    const command = event.tool_input?.command || '';
 
     // Check for dangerous git commands on protected branches
     const protectedBranches = ['main', 'master', 'production'];
@@ -49,7 +50,7 @@ async function main() {
         currentBranch = execSync('git branch --show-current', { encoding: 'utf8' }).trim();
     } catch {
         // Not in a git repo, allow
-        console.log(JSON.stringify({}));
+        process.stdout.write('{}');
         process.exit(0);
     }
 
@@ -58,27 +59,22 @@ async function main() {
     // Block force push to protected branches
     for (const pattern of dangerousPatterns) {
         if (pattern.test(command) && isProtectedBranch) {
-            console.log(JSON.stringify({
-                block: true,
-                message: `Blocked: Dangerous operation on protected branch '${currentBranch}'.\n` +
-                         `Create a feature branch instead: git checkout -b feature/your-feature`
-            }));
+            // Exit 2 blocks the operation; stderr message is shown to Claude
+            console.error(`Blocked: Dangerous operation on protected branch '${currentBranch}'.\n` +
+                         `Create a feature branch instead: git checkout -b feature/your-feature`);
             process.exit(2);
         }
     }
 
     // Block direct push to main without PR
     if (/git\s+push\s+origin\s+(main|master)/.test(command)) {
-        console.log(JSON.stringify({
-            block: true,
-            message: `Blocked: Direct push to '${currentBranch}' not allowed.\n` +
-                     `Create a PR instead: gh pr create`
-        }));
+        console.error(`Blocked: Direct push to '${currentBranch}' not allowed.\n` +
+                     `Create a PR instead: gh pr create`);
         process.exit(2);
     }
 
     // Allow all other commands
-    console.log(JSON.stringify({}));
+    process.stdout.write('{}');
     process.exit(0);
 }
 

@@ -85,6 +85,7 @@ process.stdin.on('end', () => {
         }
 
         // Invalid format - block the commit
+        // Exit 2 blocks the operation; stderr message is shown to Claude
         console.error('BLOCKED: Commit message does not follow conventional commit format.\n');
         console.error('Expected format: type(scope)?: subject');
         console.error('Examples:');
@@ -94,13 +95,7 @@ process.stdin.on('end', () => {
         console.error('\nValid types: feat, fix, docs, style, refactor, perf, test, build, ci, chore, revert');
         console.error(`\nReceived: "${message}"`);
 
-        // Output JSON to block the operation
-        console.log(JSON.stringify({
-            decision: 'block',
-            reason: 'Commit message must follow conventional commit format'
-        }));
-
-        process.exit(1);
+        process.exit(2);
 
     } catch (e) {
         // Parse error - allow the operation

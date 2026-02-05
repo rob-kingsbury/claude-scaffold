@@ -185,18 +185,21 @@ async function main() {
     }
 
     const event = JSON.parse(input);
-    const filePath = event.toolInput?.file_path || event.toolInput?.filePath || '';
-    const content = event.toolInput?.content || event.toolInput?.new_string || '';
+    // Claude Code uses snake_case for hook event properties
+    const filePath = event.tool_input?.file_path || '';
+    const content = event.tool_input?.content || event.tool_input?.new_string || '';
 
     // Skip certain files
     if (shouldSkipFile(filePath)) {
-        console.log(JSON.stringify({}));
+        // Empty JSON = allow operation
+process.stdout.write('{}');
         process.exit(0);
     }
 
     // Skip empty content
     if (!content || content.trim() === '') {
-        console.log(JSON.stringify({}));
+        // Empty JSON = allow operation
+process.stdout.write('{}');
         process.exit(0);
     }
 
@@ -211,20 +214,19 @@ async function main() {
 
         const more = findings.length > 5 ? `\n  ...and ${findings.length - 5} more` : '';
 
-        console.log(JSON.stringify({
-            block: true,
-            message: `Blocked: Potential PII detected in ${filePath}\n\nFindings:\n${findingsList}${more}\n\n` +
+        // Exit 2 blocks the operation; stderr message is shown to Claude
+        console.error(`Blocked: Potential PII detected in ${filePath}\n\nFindings:\n${findingsList}${more}\n\n` +
                      `If this is test/example data, use:\n` +
                      `- @example.com for emails\n` +
                      `- 555-xxxx for phone numbers\n` +
                      `- 123-45-6789 for SSNs\n` +
-                     `- 4242424242424242 for credit cards`
-        }));
+                     `- 4242424242424242 for credit cards`);
         process.exit(2);
     }
 
     // No PII found, allow
-    console.log(JSON.stringify({}));
+    // Empty JSON = allow operation
+process.stdout.write('{}');
     process.exit(0);
 }
 

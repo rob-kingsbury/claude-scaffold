@@ -41,20 +41,30 @@ Hooks are defined in `.claude/settings.json` or `~/.claude/settings.json`:
 
 Hooks communicate via stdin/stdout/exit codes:
 
-**Input (stdin):** JSON with event data
-**Output (stdout):** JSON response
-**Exit code:** 0 = success, 2 = block action, other = error
+**Input (stdin):** JSON with event data (properties use snake_case: `tool_input`, `tool_name`)
+**Output (stdout):** JSON response (only processed when exit code is 0)
+**Exit code:** 0 = success (check JSON), 2 = block action
 
-### Response Fields
+### Blocking Operations
 
-```json
-{
-  "block": true,          // PreToolUse only - blocks the action
-  "message": "User message",
-  "feedback": "Info text",
-  "suppressOutput": false,
-  "continue": true
-}
+Two ways to block:
+
+1. **Exit code 2** (simpler): Write reason to stderr, exit 2
+   ```javascript
+   console.error('Blocked: reason here');
+   process.exit(2);
+   ```
+
+2. **JSON response** (more control): Exit 0 with JSON
+   ```json
+   { "ok": false, "reason": "Blocked: reason here" }
+   ```
+
+### Allowing Operations
+
+```javascript
+process.stdout.write('{}');  // or { "ok": true }
+process.exit(0);
 ```
 
 ## Quick Start
@@ -69,15 +79,18 @@ Or create hooks manually in `.claude/settings.json`.
 ## Included Hook Templates
 
 ### Pre-Tool Hooks (block before action)
-- `branch-protection.js` - Prevent commits/pushes to main
+- `branch-protection.js` - Prevent dangerous git operations on main
 - `pii-blocker.js` - Block PII (SSNs, credit cards, phone numbers)
 - `secrets-blocker.js` - Block secrets (API keys, passwords, tokens)
-- `skill-suggester.js` - Suggest relevant skills based on prompt
-- `tdd-guard.js` - Enforce TDD by blocking implementation without tests
+- `commit-message-check.js` - Enforce conventional commit format
+- `file-size-check.js` - Warn/block large files (>100KB warn, >500KB block)
+- `lint-check.js` - Run linter before edits (advisory)
+- `security-scan.js` - Scan for security issues (advisory)
 
 ### Post-Tool Hooks (run after action)
 - `auto-format.sh` - Format code after edits
-- `run-tests.sh` - Run tests after code changes
+- `run-tests.sh` - Run related tests after changes
+- `agent-notify.js` - Desktop notifications when agents complete
 
 ## Sources
 

@@ -59,6 +59,7 @@ process.stdin.on('end', () => {
         const sizeKB = sizeBytes / 1024;
 
         if (sizeKB > BLOCK_SIZE_KB) {
+            // Exit 2 blocks the operation; stderr message is shown to Claude
             console.error(`BLOCKED: File too large (${sizeKB.toFixed(1)}KB)`);
             console.error(`Maximum allowed: ${BLOCK_SIZE_KB}KB`);
             console.error(`File: ${filePath}`);
@@ -67,12 +68,7 @@ process.stdin.on('end', () => {
             console.error('- Moving to external storage');
             console.error('- Adding to .gitignore if temporary');
 
-            console.log(JSON.stringify({
-                decision: 'block',
-                reason: `File exceeds ${BLOCK_SIZE_KB}KB limit`
-            }));
-
-            process.exit(1);
+            process.exit(2);
         }
 
         if (sizeKB > MAX_FILE_SIZE_KB) {
