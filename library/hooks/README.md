@@ -68,11 +68,16 @@ Or create hooks manually in `.claude/settings.json`.
 
 ## Included Hook Templates
 
+### Pre-Tool Hooks (block before action)
 - `branch-protection.js` - Prevent commits/pushes to main
-- `auto-format.sh` - Format code after edits
-- `run-tests.sh` - Run tests after code changes
+- `pii-blocker.js` - Block PII (SSNs, credit cards, phone numbers)
+- `secrets-blocker.js` - Block secrets (API keys, passwords, tokens)
 - `skill-suggester.js` - Suggest relevant skills based on prompt
 - `tdd-guard.js` - Enforce TDD by blocking implementation without tests
+
+### Post-Tool Hooks (run after action)
+- `auto-format.sh` - Format code after edits
+- `run-tests.sh` - Run tests after code changes
 
 ## Sources
 

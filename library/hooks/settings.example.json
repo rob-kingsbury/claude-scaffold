@@ -11,6 +11,22 @@
           "tool": "Bash"
         },
         "description": "Prevent dangerous git operations on protected branches"
+      },
+      {
+        "type": "command",
+        "command": "node .claude/hooks/pii-blocker.js",
+        "filter": {
+          "tool": ["Edit", "Write"]
+        },
+        "description": "Block PII (SSNs, credit cards, phone numbers, emails)"
+      },
+      {
+        "type": "command",
+        "command": "node .claude/hooks/secrets-blocker.js",
+        "filter": {
+          "tool": ["Edit", "Write"]
+        },
+        "description": "Block secrets (API keys, passwords, tokens, private keys)"
       }
     ],
 
