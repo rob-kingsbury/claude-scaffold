@@ -1,0 +1,38 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "MCP configuration for PHP/MySQL projects",
+
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@anthropic/mcp-server-filesystem", "."],
+      "description": "Project file access"
+    },
+
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@anthropic/mcp-server-github"],
+      "env": {
+        "GITHUB_TOKEN": "${GITHUB_TOKEN}"
+      }
+    },
+
+    "mysql": {
+      "command": "npx",
+      "args": ["-y", "@anthropic/mcp-server-mysql"],
+      "env": {
+        "MYSQL_HOST": "localhost",
+        "MYSQL_USER": "${MYSQL_USER}",
+        "MYSQL_PASSWORD": "${MYSQL_PASSWORD}",
+        "MYSQL_DATABASE": "${MYSQL_DATABASE}"
+      },
+      "description": "MySQL database access"
+    },
+
+    "puppeteer": {
+      "command": "npx",
+      "args": ["-y", "@anthropic/mcp-server-puppeteer"],
+      "description": "Browser automation for testing"
+    }
+  }
+}

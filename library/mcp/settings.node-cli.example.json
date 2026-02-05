@@ -1,0 +1,35 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "MCP configuration for Node.js CLI projects",
+
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@anthropic/mcp-server-filesystem", "."],
+      "description": "Project file access"
+    },
+
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@anthropic/mcp-server-github"],
+      "env": {
+        "GITHUB_TOKEN": "${GITHUB_TOKEN}"
+      }
+    },
+
+    "npm": {
+      "command": "npx",
+      "args": ["-y", "npm-mcp-server"],
+      "description": "NPM package information and management"
+    },
+
+    "brave-search": {
+      "command": "npx",
+      "args": ["-y", "@anthropic/mcp-server-brave-search"],
+      "env": {
+        "BRAVE_API_KEY": "${BRAVE_API_KEY}"
+      },
+      "description": "Web search for documentation and examples"
+    }
+  }
+}

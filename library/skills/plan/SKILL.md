@@ -15,6 +15,8 @@ Strategic planning and brainstorming before implementation.
 
 Or naturally: "let's plan this", "brainstorm solutions", "think through this"
 
+For deep analysis: "think deeply about this", "give this some real thought", "ultrathink this"
+
 ## When to Use
 
 - Before implementing a complex feature
@@ -24,6 +26,9 @@ Or naturally: "let's plan this", "brainstorm solutions", "think through this"
 - Before major refactors
 
 ## The Planning Process
+
+### 0. ASSESS COMPLEXITY (First!)
+Quick triage to calibrate depth of analysis.
 
 ### 1. UNDERSTAND
 Clarify the problem before solving it.
@@ -41,6 +46,45 @@ Choose and document the path forward.
 Break into actionable steps.
 
 ## Instructions for Claude
+
+### Step 0: Complexity Assessment
+
+**Before diving in, quickly assess the task:**
+
+```
+## Complexity Assessment
+
+| Factor | Score |
+|--------|-------|
+| Files affected | 1-2 (Low) / 3-5 (Med) / 6+ (High) |
+| Architecture impact | None / Local / System-wide |
+| Risk level | Low / Medium / High |
+| Unknowns | Few / Some / Many |
+
+**Complexity: [Low/Medium/High]**
+```
+
+**Based on complexity:**
+
+| Complexity | Approach |
+|------------|----------|
+| **Low** | Quick plan, 2-3 options, move fast |
+| **Medium** | Standard planning process, thorough options |
+| **High** | Deep analysis recommended - more options, edge cases, risk analysis |
+
+**High complexity indicators:**
+- Touches auth, payments, or security
+- Database schema changes
+- Breaking API changes
+- 6+ files affected
+- Multiple valid architectures possible
+- User explicitly requests deep thought
+
+If high complexity, inform user:
+```
+This is a high-complexity task (touches [reason]).
+I'll do a thorough analysis with extended consideration of trade-offs.
+```
 
 ### Step 1: Understand the Problem
 

@@ -1,0 +1,190 @@
+# Python FastAPI Stack
+# Modern async Python API with SQLAlchemy and Pydantic
+
+name: python-fastapi
+description: Modern async Python API with FastAPI, SQLAlchemy, and Pydantic
+
+tech:
+  backend: Python 3.11+, FastAPI, SQLAlchemy
+  database: PostgreSQL (recommended) or SQLite
+  auth: JWT via python-jose
+  validation: Pydantic
+  testing: pytest, httpx
+  deployment: Docker, uvicorn
+
+structure:
+  root:
+    - app/
+    - tests/
+    - alembic/
+    - .env.example
+    - requirements.txt
+    - docker-compose.yml
+    - Dockerfile
+    - README.md
+
+  app:
+    - __init__.py
+    - main.py          # FastAPI app entry
+    - config.py        # Settings via pydantic-settings
+    - database.py      # SQLAlchemy setup
+    - models/          # SQLAlchemy models
+    - schemas/         # Pydantic schemas
+    - routers/         # API route handlers
+    - services/        # Business logic
+    - middleware/      # Custom middleware
+    - utils/           # Helper functions
+
+  tests:
+    - __init__.py
+    - conftest.py      # pytest fixtures
+    - test_api/        # API endpoint tests
+    - test_services/   # Service layer tests
+
+files:
+  app/main.py: |
+    from fastapi import FastAPI
+    from fastapi.middleware.cors import CORSMiddleware
+    from app.config import settings
+    from app.routers import health, users
+
+    app = FastAPI(
+        title=settings.APP_NAME,
+        version="1.0.0",
+        docs_url="/api/docs",
+        redoc_url="/api/redoc"
+    )
+
+    app.add_middleware(
+        CORSMiddleware,
+        allow_origins=settings.CORS_ORIGINS,
+        allow_credentials=True,
+        allow_methods=["*"],
+        allow_headers=["*"],
+    )
+
+    app.include_router(health.router, prefix="/api", tags=["health"])
+    app.include_router(users.router, prefix="/api/users", tags=["users"])
+
+  app/config.py: |
+    from pydantic_settings import BaseSettings
+    from functools import lru_cache
+
+    class Settings(BaseSettings):
+        APP_NAME: str = "FastAPI App"
+        DEBUG: bool = False
+        DATABASE_URL: str
+        SECRET_KEY: str
+        CORS_ORIGINS: list[str] = ["http://localhost:3000"]
+
+        class Config:
+            env_file = ".env"
+
+    @lru_cache
+    def get_settings() -> Settings:
+        return Settings()
+
+    settings = get_settings()
+
+  app/database.py: |
+    from sqlalchemy import create_engine
+    from sqlalchemy.orm import sessionmaker, DeclarativeBase
+    from app.config import settings
+
+    engine = create_engine(settings.DATABASE_URL)
+    SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
+
+    class Base(DeclarativeBase):
+        pass
+
+    def get_db():
+        db = SessionLocal()
+        try:
+            yield db
+        finally:
+            db.close()
+
+  requirements.txt: |
+    fastapi>=0.109.0
+    uvicorn[standard]>=0.27.0
+    sqlalchemy>=2.0.0
+    pydantic>=2.0.0
+    pydantic-settings>=2.0.0
+    python-jose[cryptography]>=3.3.0
+    passlib[bcrypt]>=1.7.4
+    alembic>=1.13.0
+    psycopg2-binary>=2.9.9
+    httpx>=0.26.0
+    pytest>=8.0.0
+    pytest-asyncio>=0.23.0
+
+  Dockerfile: |
+    FROM python:3.11-slim
+
+    WORKDIR /app
+
+    COPY requirements.txt .
+    RUN pip install --no-cache-dir -r requirements.txt
+
+    COPY . .
+
+    EXPOSE 8000
+    CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8000"]
+
+  docker-compose.yml: |
+    version: '3.8'
+    services:
+      api:
+        build: .
+        ports:
+          - "8000:8000"
+        environment:
+          - DATABASE_URL=postgresql://user:pass@db:5432/app
+        depends_on:
+          - db
+
+      db:
+        image: postgres:15
+        environment:
+          POSTGRES_USER: user
+          POSTGRES_PASSWORD: pass
+          POSTGRES_DB: app
+        volumes:
+          - postgres_data:/var/lib/postgresql/data
+
+    volumes:
+      postgres_data:
+
+init_commands:
+  - python -m venv venv
+  - venv/Scripts/activate (Windows) or source venv/bin/activate (Unix)
+  - pip install -r requirements.txt
+  - alembic init alembic
+  - uvicorn app.main:app --reload
+
+conventions:
+  api_responses:
+    success: '{"data": ..., "message": "Success"}'
+    error: '{"detail": "Error message"}'
+
+  naming:
+    files: snake_case
+    classes: PascalCase
+    functions: snake_case
+    routes: kebab-case (/api/user-profiles)
+
+  patterns:
+    - Dependency injection via FastAPI Depends
+    - Pydantic schemas for all I/O
+    - Repository pattern for database access
+    - Service layer for business logic
+
+mcp_servers:
+  - filesystem
+  - github
+  - postgres
+
+sources:
+  - https://fastapi.tiangolo.com/
+  - https://docs.sqlalchemy.org/
+  - https://docs.pydantic.dev/

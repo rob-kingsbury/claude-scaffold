@@ -1,0 +1,219 @@
+# Next.js + Prisma Stack
+# Full-stack TypeScript with App Router and Prisma ORM
+
+name: nextjs-prisma
+description: Full-stack TypeScript application with Next.js App Router and Prisma ORM
+
+tech:
+  frontend: Next.js 14+, React 18, TypeScript
+  styling: Tailwind CSS
+  database: PostgreSQL via Prisma ORM
+  auth: NextAuth.js / Auth.js
+  validation: Zod
+  testing: Jest, Playwright
+  deployment: Vercel (recommended)
+
+structure:
+  root:
+    - app/              # App Router pages and layouts
+    - components/       # React components
+    - lib/              # Utility functions
+    - prisma/           # Database schema and migrations
+    - public/           # Static assets
+    - styles/           # Global styles
+    - types/            # TypeScript types
+    - .env.local        # Local environment (gitignored)
+    - .env.example      # Environment template
+
+  app:
+    - layout.tsx        # Root layout
+    - page.tsx          # Home page
+    - api/              # API routes
+    - (auth)/           # Auth-related pages
+    - dashboard/        # Protected pages
+
+  components:
+    - ui/               # Base UI components
+    - forms/            # Form components
+    - layout/           # Layout components
+
+  lib:
+    - db.ts             # Prisma client
+    - auth.ts           # Auth configuration
+    - utils.ts          # Helper functions
+    - validations.ts    # Zod schemas
+
+files:
+  app/layout.tsx: |
+    import type { Metadata } from 'next'
+    import { Inter } from 'next/font/google'
+    import './globals.css'
+
+    const inter = Inter({ subsets: ['latin'] })
+
+    export const metadata: Metadata = {
+      title: 'App Name',
+      description: 'App description',
+    }
+
+    export default function RootLayout({
+      children,
+    }: {
+      children: React.ReactNode
+    }) {
+      return (
+        <html lang="en">
+          <body className={inter.className}>{children}</body>
+        </html>
+      )
+    }
+
+  lib/db.ts: |
+    import { PrismaClient } from '@prisma/client'
+
+    const globalForPrisma = globalThis as unknown as {
+      prisma: PrismaClient | undefined
+    }
+
+    export const prisma = globalForPrisma.prisma ?? new PrismaClient()
+
+    if (process.env.NODE_ENV !== 'production') {
+      globalForPrisma.prisma = prisma
+    }
+
+  lib/auth.ts: |
+    import NextAuth from 'next-auth'
+    import { PrismaAdapter } from '@auth/prisma-adapter'
+    import { prisma } from './db'
+
+    export const { handlers, auth, signIn, signOut } = NextAuth({
+      adapter: PrismaAdapter(prisma),
+      providers: [
+        // Add providers here
+      ],
+    })
+
+  prisma/schema.prisma: |
+    generator client {
+      provider = "prisma-client-js"
+    }
+
+    datasource db {
+      provider = "postgresql"
+      url      = env("DATABASE_URL")
+    }
+
+    model User {
+      id            String    @id @default(cuid())
+      name          String?
+      email         String    @unique
+      emailVerified DateTime?
+      image         String?
+      createdAt     DateTime  @default(now())
+      updatedAt     DateTime  @updatedAt
+    }
+
+  app/api/users/route.ts: |
+    import { NextResponse } from 'next/server'
+    import { prisma } from '@/lib/db'
+
+    export async function GET() {
+      const users = await prisma.user.findMany()
+      return NextResponse.json(users)
+    }
+
+    export async function POST(request: Request) {
+      const body = await request.json()
+
+      const user = await prisma.user.create({
+        data: body,
+      })
+
+      return NextResponse.json(user, { status: 201 })
+    }
+
+  components/ui/button.tsx: |
+    import { forwardRef } from 'react'
+    import { cn } from '@/lib/utils'
+
+    interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
+      variant?: 'primary' | 'secondary' | 'ghost'
+      size?: 'sm' | 'md' | 'lg'
+    }
+
+    export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
+      ({ className, variant = 'primary', size = 'md', ...props }, ref) => {
+        return (
+          <button
+            ref={ref}
+            className={cn(
+              'inline-flex items-center justify-center rounded-md font-medium transition-colors',
+              'focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-offset-2',
+              {
+                'bg-primary text-white hover:bg-primary/90': variant === 'primary',
+                'border border-input bg-background hover:bg-accent': variant === 'secondary',
+                'hover:bg-accent hover:text-accent-foreground': variant === 'ghost',
+                'h-9 px-3 text-sm': size === 'sm',
+                'h-10 px-4': size === 'md',
+                'h-11 px-8': size === 'lg',
+              },
+              className
+            )}
+            {...props}
+          />
+        )
+      }
+    )
+    Button.displayName = 'Button'
+
+  lib/utils.ts: |
+    import { type ClassValue, clsx } from 'clsx'
+    import { twMerge } from 'tailwind-merge'
+
+    export function cn(...inputs: ClassValue[]) {
+      return twMerge(clsx(inputs))
+    }
+
+  .env.example: |
+    DATABASE_URL="postgresql://user:password@localhost:5432/dbname"
+    NEXTAUTH_SECRET="your-secret-here"
+    NEXTAUTH_URL="http://localhost:3000"
+
+init_commands:
+  - npx create-next-app@latest . --typescript --tailwind --eslint --app --src-dir=false
+  - npm install prisma @prisma/client
+  - npm install next-auth @auth/prisma-adapter
+  - npm install zod clsx tailwind-merge
+  - npx prisma init
+  - npx prisma generate
+
+conventions:
+  naming:
+    components: PascalCase (Button.tsx)
+    utilities: camelCase (formatDate.ts)
+    api_routes: kebab-case (/api/user-profiles)
+    database: snake_case (user_profiles)
+
+  patterns:
+    - Server Components by default
+    - Client Components only when needed ('use client')
+    - Server Actions for mutations
+    - Zod for validation
+    - Prisma for all database access
+
+  file_organization:
+    - Co-locate related files (component + styles + tests)
+    - Shared components in /components
+    - Page-specific components in /app/[page]/components
+
+mcp_servers:
+  - filesystem
+  - github
+  - postgres
+  - vercel
+
+sources:
+  - https://nextjs.org/docs
+  - https://www.prisma.io/docs
+  - https://authjs.dev/
+  - https://tailwindcss.com/docs

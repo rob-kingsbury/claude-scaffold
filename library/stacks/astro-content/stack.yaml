@@ -1,0 +1,193 @@
+# Astro Content Stack
+# Content-focused static site with Astro and MDX
+
+name: astro-content
+description: Content-focused static sites with Astro, MDX, and optional Tailwind
+
+tech:
+  framework: Astro 4+
+  content: MDX, Astro Content Collections
+  styling: Tailwind CSS (optional)
+  deployment: Vercel, Netlify, Cloudflare Pages
+  extras: View Transitions, Islands Architecture
+
+structure:
+  root:
+    - src/
+    - public/
+    - astro.config.mjs
+    - tailwind.config.mjs
+
+  src:
+    - pages/           # File-based routing
+    - layouts/         # Page layouts
+    - components/      # UI components
+    - content/         # Content collections
+    - styles/          # Global styles
+
+  content:
+    - blog/            # Blog posts (MDX)
+    - docs/            # Documentation (MDX)
+    - config.ts        # Collection schemas
+
+files:
+  astro.config.mjs: |
+    import { defineConfig } from 'astro/config';
+    import mdx from '@astrojs/mdx';
+    import tailwind from '@astrojs/tailwind';
+
+    export default defineConfig({
+      integrations: [mdx(), tailwind()],
+      output: 'static',
+    });
+
+  src/content/config.ts: |
+    import { defineCollection, z } from 'astro:content';
+
+    const blog = defineCollection({
+      type: 'content',
+      schema: z.object({
+        title: z.string(),
+        description: z.string(),
+        pubDate: z.coerce.date(),
+        updatedDate: z.coerce.date().optional(),
+        heroImage: z.string().optional(),
+        tags: z.array(z.string()).default([]),
+      }),
+    });
+
+    const docs = defineCollection({
+      type: 'content',
+      schema: z.object({
+        title: z.string(),
+        description: z.string(),
+        order: z.number().default(0),
+      }),
+    });
+
+    export const collections = { blog, docs };
+
+  src/layouts/BaseLayout.astro: |
+    ---
+    interface Props {
+      title: string;
+      description?: string;
+    }
+
+    const { title, description = 'Default description' } = Astro.props;
+    ---
+
+    <!doctype html>
+    <html lang="en">
+      <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width" />
+        <meta name="description" content={description} />
+        <title>{title}</title>
+      </head>
+      <body>
+        <slot />
+      </body>
+    </html>
+
+  src/pages/index.astro: |
+    ---
+    import BaseLayout from '../layouts/BaseLayout.astro';
+    import { getCollection } from 'astro:content';
+
+    const posts = await getCollection('blog');
+    const recentPosts = posts
+      .sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf())
+      .slice(0, 5);
+    ---
+
+    <BaseLayout title="Home">
+      <main>
+        <h1>Welcome</h1>
+        <section>
+          <h2>Recent Posts</h2>
+          <ul>
+            {recentPosts.map((post) => (
+              <li>
+                <a href={`/blog/${post.slug}`}>{post.data.title}</a>
+              </li>
+            ))}
+          </ul>
+        </section>
+      </main>
+    </BaseLayout>
+
+  src/pages/blog/[...slug].astro: |
+    ---
+    import { getCollection } from 'astro:content';
+    import BaseLayout from '../../layouts/BaseLayout.astro';
+
+    export async function getStaticPaths() {
+      const posts = await getCollection('blog');
+      return posts.map((post) => ({
+        params: { slug: post.slug },
+        props: post,
+      }));
+    }
+
+    const post = Astro.props;
+    const { Content } = await post.render();
+    ---
+
+    <BaseLayout title={post.data.title} description={post.data.description}>
+      <article>
+        <h1>{post.data.title}</h1>
+        <time datetime={post.data.pubDate.toISOString()}>
+          {post.data.pubDate.toLocaleDateString()}
+        </time>
+        <Content />
+      </article>
+    </BaseLayout>
+
+  src/content/blog/first-post.mdx: |
+    ---
+    title: 'First Post'
+    description: 'This is my first blog post'
+    pubDate: 2024-01-15
+    tags: ['welcome', 'intro']
+    ---
+
+    # Welcome to my blog
+
+    This is my first post using Astro and MDX.
+
+    ## Features
+
+    - Fast static generation
+    - MDX for rich content
+    - Content collections with type safety
+
+init_commands:
+  - npm create astro@latest . -- --template minimal
+  - npx astro add mdx tailwind
+  - mkdir -p src/content/blog src/content/docs
+  - npm run dev
+
+conventions:
+  naming:
+    pages: kebab-case (my-page.astro)
+    components: PascalCase (MyComponent.astro)
+    content: kebab-case (my-post.mdx)
+
+  patterns:
+    - Server-first rendering
+    - Islands for interactivity
+    - Content Collections for type-safe content
+    - View Transitions for SPA-like navigation
+
+  content_frontmatter:
+    required: [title, description]
+    optional: [pubDate, tags, heroImage]
+
+mcp_servers:
+  - filesystem
+  - github
+
+sources:
+  - https://docs.astro.build/
+  - https://mdxjs.com/

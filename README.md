@@ -36,6 +36,9 @@ Project scaffolding system for Claude Code with battle-tested patterns extracted
 | `react-supabase` | Modern SPAs | BandPilot |
 | `node-cli` | CLI tools, automation | EVA-QA |
 | `static-gsap` | Marketing sites | Stompers Redesign |
+| `python-fastapi` | Async Python APIs | FastAPI + SQLAlchemy |
+| `nextjs-prisma` | Full-stack TypeScript | Next.js App Router |
+| `astro-content` | Content sites, blogs | Astro + MDX |
 
 ## What Gets Created
 
@@ -51,7 +54,8 @@ your-project/
 │   │   ├── css-architecture.md
 │   │   ├── database-queries.md
 │   │   ├── development-workflow.md
-│   │   └── security-checklist.md
+│   │   ├── security-checklist.md
+│   │   └── thinking-mode.md
 │   ├── skills/
 │   │   ├── session-start/
 │   │   ├── handoff/
@@ -71,13 +75,21 @@ your-project/
 | **session-start** | Initialize work sessions, load context, check issues |
 | **handoff** | End-of-session cleanup, commit, and context preservation |
 
+### Planning & Design
+| Skill | Description |
+|-------|-------------|
+| **plan** | Strategic planning with complexity assessment (supports deep thinking) |
+| **frontend-design** | Distinctive, production-grade UI avoiding generic AI aesthetics |
+| **interface-design** | Systematic design tokens, consistency, and component patterns |
+
 ### Development Workflow
 | Skill | Description |
 |-------|-------------|
 | **tdd** | Test-Driven Development with Red-Green-Refactor cycle |
 | **debug** | Systematic debugging: reproduce, isolate, identify, fix, verify |
 | **fix-issue** | Load GitHub issue context and implement the solution |
-| **plan** | Strategic planning and brainstorming before implementation |
+| **testing** | Testing strategy and implementation (unit, integration, E2E) |
+| **refactor** | Code refactoring patterns and techniques |
 
 ### Code Quality
 | Skill | Description |
@@ -85,18 +97,21 @@ your-project/
 | **audit** | Security, quality, and accessibility audits |
 | **code-review** | Comprehensive PR/code review checklist |
 | **simplify** | Refactor for clarity without changing behavior |
+| **performance** | Performance analysis and optimization |
+| **accessibility** | WCAG compliance auditing and fixes |
 
-### Git & Collaboration
+### Documentation & APIs
+| Skill | Description |
+|-------|-------------|
+| **api-docs** | Generate API documentation (OpenAPI, markdown, JSDoc) |
+| **db-migrate** | Database migration management |
+
+### Git & Deployment
 | Skill | Description |
 |-------|-------------|
 | **git-workflow** | Branching strategy, conventional commits, PR flow |
 | **pr-create** | Create well-structured pull requests |
-
-### Design & UI
-| Skill | Description |
-|-------|-------------|
-| **frontend-design** | Distinctive, production-grade UI avoiding generic AI aesthetics |
-| **interface-design** | Systematic design tokens, consistency, and component patterns |
+| **deploy** | Deployment preparation, checklists, and rollback |
 
 ## Hooks Library
 
@@ -107,6 +122,10 @@ Hooks provide deterministic automation at specific points in Claude Code's lifec
 | **branch-protection.js** | PreToolUse | Block dangerous git operations on main |
 | **auto-format.sh** | PostToolUse | Format code after edits |
 | **run-tests.sh** | PostToolUse | Run related tests after changes |
+| **lint-check.js** | PreToolUse | Run linter before edits |
+| **commit-message-check.js** | PreToolUse | Enforce conventional commits |
+| **security-scan.js** | PreToolUse | Scan for security issues |
+| **file-size-check.js** | PreToolUse | Warn about large files |
 
 See `library/hooks/README.md` for configuration details.
 
@@ -119,6 +138,18 @@ See `library/hooks/README.md` for configuration details.
 | **database-queries.md** | Query safety, schema management |
 | **development-workflow.md** | Session management, commits, issues |
 | **security-checklist.md** | OWASP-aligned security checks |
+| **thinking-mode.md** | When and how to invoke deep thinking |
+
+## MCP Server Recommendations
+
+Pre-configured MCP server setups for each stack. See `library/mcp/README.md`.
+
+| Config | Servers |
+|--------|---------|
+| **Global** | filesystem, github, brave-search, context7 |
+| **PHP/MySQL** | + mysql, puppeteer |
+| **React/Supabase** | + postgres, vercel |
+| **Node CLI** | + npm |
 
 ## Workflows
 
@@ -128,6 +159,15 @@ See `library/hooks/README.md` for configuration details.
 | **status** | "status" | Project overview |
 | **audit** | "audit" | Run codebase audits |
 | **sync** | "sync docs" | Keep documentation current |
+
+## Deep Thinking Mode
+
+For complex tasks that need thorough analysis, use phrases like:
+- "Think deeply about this"
+- "Give this some real thought"
+- "Ultrathink this"
+
+The `/plan` skill includes automatic complexity assessment and will provide deeper analysis for high-complexity tasks.
 
 ## The AMA Dialog
 
@@ -188,6 +228,8 @@ This scaffold system was informed by:
 - [Interface Design Plugin](https://github.com/Dammyjay93/interface-design)
 - [Superpowers Skills](https://github.com/obra/superpowers)
 - [Trail of Bits Security Skills](https://github.com/trailofbits)
+- [Awesome MCP Servers](https://github.com/punkpeye/awesome-mcp-servers)
+- [Claude Think Tool](https://www.anthropic.com/engineering/claude-think-tool)
 
 ## Contributing
 
@@ -196,6 +238,7 @@ PRs welcome for:
 - Additional skills
 - Improved rules/patterns
 - Hook examples
+- MCP configurations
 
 ## License
 

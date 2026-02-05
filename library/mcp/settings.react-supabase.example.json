@@ -1,0 +1,44 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "MCP configuration for React/Supabase projects",
+
+  "mcpServers": {
+    "filesystem": {
+      "command": "npx",
+      "args": ["-y", "@anthropic/mcp-server-filesystem", "."],
+      "description": "Project file access"
+    },
+
+    "github": {
+      "command": "npx",
+      "args": ["-y", "@anthropic/mcp-server-github"],
+      "env": {
+        "GITHUB_TOKEN": "${GITHUB_TOKEN}"
+      }
+    },
+
+    "postgres": {
+      "command": "npx",
+      "args": ["-y", "@anthropic/mcp-server-postgres"],
+      "env": {
+        "POSTGRES_CONNECTION_STRING": "${SUPABASE_DB_URL}"
+      },
+      "description": "Supabase PostgreSQL database"
+    },
+
+    "puppeteer": {
+      "command": "npx",
+      "args": ["-y", "@anthropic/mcp-server-puppeteer"],
+      "description": "Browser automation for E2E testing"
+    },
+
+    "vercel": {
+      "command": "npx",
+      "args": ["-y", "vercel-mcp-server"],
+      "env": {
+        "VERCEL_TOKEN": "${VERCEL_TOKEN}"
+      },
+      "description": "Vercel deployment management"
+    }
+  }
+}
