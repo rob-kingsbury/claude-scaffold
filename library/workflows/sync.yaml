@@ -1,0 +1,68 @@
+# Documentation Sync Workflow
+# Keep documentation in sync with code changes
+
+name: sync
+triggers:
+  - "sync"
+  - "sync docs"
+  - "update docs"
+  - "documentation sync"
+
+steps:
+  1_identify_changes:
+    description: "Find recently modified code files"
+    command: "git diff --name-only HEAD~5"
+    action: "List files that may need doc updates"
+
+  2_check_schema:
+    description: "Verify schema.md matches database"
+    condition: "schema.md exists"
+    action: |
+      - Compare .claude/schema.md with actual database
+      - Flag any mismatches
+      - Update schema.md if database is source of truth
+
+  3_check_functions:
+    description: "Verify functions.md is current"
+    condition: "functions.md exists"
+    action: |
+      - Scan for new exported functions
+      - Check for removed/renamed functions
+      - Update functions.md with changes
+
+  4_check_context:
+    description: "Prune old session notes from context.md"
+    action: |
+      - Keep only last 5 session notes
+      - Verify YAML header is current
+      - Archive older notes to git history
+
+  5_check_handoff:
+    description: "Verify HANDOFF.md reflects current state"
+    action: |
+      - Update status table
+      - Refresh open issues list
+      - Update quick commands if changed
+
+  6_commit_sync:
+    description: "Commit documentation updates"
+    command: |
+      git add .claude/ HANDOFF.md README.md
+      git commit -m "docs: Sync documentation with code
+
+      Co-Authored-By: Claude <noreply@anthropic.com>"
+    skip_if: "No changes to commit"
+
+output_format: |
+  === SYNC COMPLETE ===
+
+  Updated:
+  - [file1] - [what changed]
+  - [file2] - [what changed]
+
+  Verified (no changes needed):
+  - [file3]
+  - [file4]
+
+  Warnings:
+  - [any issues found]

@@ -1,0 +1,108 @@
+# Codebase Audit Workflow
+# Comprehensive security, quality, and accessibility checks
+
+name: audit
+triggers:
+  - "audit"
+  - "run audit"
+  - "security check"
+  - "code review"
+
+parameters:
+  type:
+    options: [security, quality, a11y, all]
+    default: all
+  target:
+    description: "File or directory to audit"
+    default: "."
+
+steps:
+  1_security_checks:
+    description: "Check for security vulnerabilities"
+    skip_if: "type not in [security, all]"
+    checks:
+      - name: "Hardcoded credentials"
+        pattern: "(password|secret|api_key|token)\\s*=\\s*['\"][^'\"]+['\"]"
+        severity: CRITICAL
+
+      - name: ".env not gitignored"
+        command: "cat .gitignore | grep -E '^.env'"
+        expect: "match"
+        severity: CRITICAL
+
+      - name: "SQL injection risk"
+        pattern: "(SELECT|INSERT|UPDATE|DELETE).*\\$"
+        file_types: ["*.php"]
+        severity: HIGH
+
+      - name: "XSS risk (unescaped output)"
+        pattern: "echo\\s+\\$|print\\s+\\$"
+        file_types: ["*.php"]
+        severity: HIGH
+
+      - name: "Dangerous functions"
+        pattern: "\\b(eval|exec|shell_exec|system|passthru)\\s*\\("
+        file_types: ["*.php"]
+        severity: HIGH
+
+  2_quality_checks:
+    description: "Check code quality"
+    skip_if: "type not in [quality, all]"
+    checks:
+      - name: "Debug statements"
+        pattern: "console\\.log|var_dump|print_r|dd\\("
+        severity: MEDIUM
+
+      - name: "TODO without issue"
+        pattern: "(TODO|FIXME|HACK|XXX)(?!.*#\\d)"
+        severity: LOW
+
+      - name: "Commented code blocks"
+        pattern: "^\\s*//.*\\{|^\\s*/\\*[\\s\\S]*?\\*/"
+        severity: LOW
+
+  3_a11y_checks:
+    description: "Check accessibility"
+    skip_if: "type not in [a11y, all]"
+    checks:
+      - name: "Images missing alt"
+        pattern: "<img(?![^>]*alt=)"
+        severity: MEDIUM
+
+      - name: "Inputs missing labels"
+        pattern: "<input(?![^>]*aria-label)(?![^>]*id=)"
+        severity: MEDIUM
+
+      - name: "Buttons without accessible name"
+        pattern: "<button[^>]*>\\s*<(svg|i|img)"
+        severity: MEDIUM
+
+  4_categorize:
+    description: "Categorize findings by severity"
+    action: |
+      Group findings:
+      - CRITICAL: Fix immediately
+      - HIGH: Fix before commit
+      - MEDIUM: Fix this session
+      - LOW: Create GitHub Issue
+
+  5_output_report:
+    description: "Generate audit report"
+    output: |
+      === AUDIT REPORT ===
+
+      Scope: [target]
+      Types: [security/quality/a11y]
+
+      Summary:
+      - CRITICAL: [count]
+      - HIGH: [count]
+      - MEDIUM: [count]
+      - LOW: [count]
+
+      Findings:
+      [grouped by severity with file:line references]
+
+      Actions Taken:
+      - [auto-fixes applied]
+      - [issues created]

@@ -1,0 +1,101 @@
+# Node.js CLI Stack Template
+# Command-line tools and automation scripts
+
+name: node-cli
+description: Node.js CLI tool with TypeScript
+based_on: ["eva-qa", "mcp-scroll-analyzer"]
+
+tech:
+  runtime: Node.js 20+
+  language: TypeScript 5
+  cli: Commander.js
+  build: tsup or esbuild
+
+structure:
+  directories:
+    - src/
+    - src/commands/
+    - src/lib/
+    - src/types/
+    - tests/
+    - .claude/
+    - .claude/rules/
+
+  files:
+    - path: src/index.ts
+      template: index.ts.template
+
+    - path: src/cli.ts
+      template: cli.ts.template
+
+    - path: src/commands/run.ts
+      template: command.ts.template
+
+    - path: src/lib/config.ts
+      template: config.ts.template
+
+    - path: src/types/index.ts
+      template: types.ts.template
+
+    - path: package.json
+      template: package.json.template
+
+    - path: tsconfig.json
+      template: tsconfig.json.template
+
+    - path: .gitignore
+      template: gitignore.template
+
+    - path: README.md
+      template: README.md.template
+
+    - path: CLAUDE.md
+      template: CLAUDE.md.template
+
+    - path: .claude/context.md
+      template: context.md.template
+
+    - path: .claude/workflows.yaml
+      copy_from: library/workflows/
+
+init_commands:
+  - "npm init -y"
+  - "npm install commander chalk"
+  - "npm install -D typescript @types/node tsup vitest"
+
+rules_to_copy:
+  - code-architecture.md
+  - development-workflow.md
+  - security-checklist.md
+
+skills_to_copy:
+  - session-start
+  - handoff
+  - audit
+  - simplify
+  - fix-issue
+
+conventions:
+  naming:
+    commands: kebab-case
+    functions: camelCase
+    classes: PascalCase
+    constants: UPPER_SNAKE
+
+  patterns:
+    command_structure: "parse args → validate → execute → output"
+    error_handling: "Catch at top level, user-friendly messages"
+    config: "Load from file, env, or flags (in that order)"
+    output: "chalk for colors, structured JSON for --json flag"
+
+  security:
+    - Validate all file paths (no traversal)
+    - Sanitize shell command inputs
+    - No eval() or dynamic require()
+    - Respect .gitignore patterns
+
+commands:
+  dev: "npm run dev"
+  build: "npm run build"
+  test: "npm test"
+  link: "npm link"

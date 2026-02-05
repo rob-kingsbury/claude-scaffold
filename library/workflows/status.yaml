@@ -1,0 +1,45 @@
+# Project Status Workflow
+# Quick overview of project state
+
+name: status
+triggers:
+  - "status"
+  - "project status"
+  - "show status"
+  - "where are we"
+
+steps:
+  1_git_status:
+    description: "Show uncommitted changes"
+    command: "git status --short"
+
+  2_open_issues:
+    description: "Show open GitHub issues"
+    command: "gh issue list --state open --limit 10"
+
+  3_recent_commits:
+    description: "Show recent commits"
+    command: "git log --oneline -5"
+
+  4_current_branch:
+    description: "Show current branch"
+    command: "git branch --show-current"
+
+  5_remote_status:
+    description: "Check sync with remote"
+    command: "git status -sb"
+
+output_format: |
+  === PROJECT STATUS ===
+
+  Branch: [current branch]
+  Remote: [ahead/behind status]
+
+  Uncommitted Changes:
+  [git status output]
+
+  Open Issues ([count]):
+  [issue list]
+
+  Recent Commits:
+  [commit log]

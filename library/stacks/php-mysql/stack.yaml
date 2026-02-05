@@ -1,0 +1,108 @@
+# PHP + MySQL Stack Template
+# Traditional web applications with server-side rendering
+
+name: php-mysql
+description: Traditional PHP web app with MySQL database
+based_on: ["ai-ta", "pebble"]
+
+tech:
+  backend: PHP 8.0+
+  database: MySQL 8.0+
+  frontend: Vanilla JavaScript
+  css: Custom CSS with variables
+  build: None (or optional Vite)
+
+structure:
+  directories:
+    - web/
+    - web/api/
+    - web/pages/
+    - web/includes/
+    - web/assets/css/
+    - web/assets/js/
+    - web/assets/img/
+    - lib/
+    - config/
+    - sql/
+    - .claude/
+    - .claude/rules/
+
+  files:
+    - path: web/index.php
+      template: index.php.template
+
+    - path: web/includes/db.php
+      template: db.php.template
+
+    - path: web/includes/header.php
+      template: header.php.template
+
+    - path: web/includes/footer.php
+      template: footer.php.template
+
+    - path: web/assets/css/styles.css
+      template: styles.css.template
+
+    - path: web/assets/js/app.js
+      template: app.js.template
+
+    - path: config/config.php
+      template: config.php.template
+
+    - path: sql/schema.sql
+      template: schema.sql.template
+
+    - path: .gitignore
+      template: gitignore.template
+
+    - path: CLAUDE.md
+      template: CLAUDE.md.template
+
+    - path: HANDOFF.md
+      template: HANDOFF.md.template
+
+    - path: .claude/context.md
+      template: context.md.template
+
+    - path: .claude/schema.md
+      template: schema.md.template
+
+    - path: .claude/workflows.yaml
+      copy_from: library/workflows/
+
+rules_to_copy:
+  - code-architecture.md
+  - css-architecture.md
+  - database-queries.md
+  - development-workflow.md
+  - security-checklist.md
+
+skills_to_copy:
+  - session-start
+  - handoff
+  - audit
+  - simplify
+  - fix-issue
+
+conventions:
+  naming:
+    files: kebab-case
+    classes: PascalCase
+    functions: camelCase
+    database: snake_case
+    css: kebab-case (BEM)
+
+  patterns:
+    api_response: "{ success: bool, data: any, error: string }"
+    db_helper: "dbQuery(), dbQueryOne(), dbQueryValue()"
+    early_return: "Validate and return early, main logic last"
+
+  security:
+    - Prepared statements for all queries
+    - htmlspecialchars() for all output
+    - Validate all $_GET/$_POST input
+    - CSRF tokens on forms
+
+commands:
+  dev: "php -S localhost:8000 -t web/"
+  test: "phpunit tests/"

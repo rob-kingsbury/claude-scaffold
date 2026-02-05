@@ -1,0 +1,327 @@
+# Adaptive AMA Question Bank
+# Questions are organized by category with triggers for when to ask deeper questions
+
+version: 1.0.0
+
+# =============================================================================
+# CORE QUESTIONS (Always Asked)
+# =============================================================================
+core:
+  - id: problem
+    question: "What problem does this solve? Who has this problem today?"
+    purpose: "Understand the core value proposition"
+    follow_up_triggers:
+      - keyword: "business"
+        branch: business
+      - keyword: "internal"
+        branch: internal_tool
+      - keyword: "developer"
+        branch: developer_tool
+
+  - id: user
+    question: "Who is the primary user? Describe them in one sentence."
+    purpose: "Define the target audience"
+    follow_up_triggers:
+      - keyword: "team"
+        branch: multi_user
+      - keyword: "client"
+        branch: b2b
+      - keyword: "consumer"
+        branch: b2c
+
+  - id: mvp
+    question: "What's the absolute minimum this needs to do to be useful? (3-5 features max)"
+    purpose: "Prevent scope creep from day one"
+    follow_up_triggers: []
+
+  - id: stack
+    question: "What tech stack? (Or say 'recommend' and I'll suggest based on your answers)"
+    purpose: "Determine which stack template to use"
+    options:
+      - "PHP + MySQL (traditional, simple)"
+      - "Laravel + Livewire + Tailwind (SaaS, rapid dev)"
+      - "React + Vite + Supabase (modern SPA)"
+      - "Node CLI (command-line tools)"
+      - "Static + GSAP (marketing sites)"
+      - "recommend"
+    follow_up_triggers:
+      - keyword: "laravel"
+        branch: laravel_specifics
+      - keyword: "react"
+        branch: react_specifics
+      - keyword: "node"
+        branch: node_specifics
+
+  - id: existing_code
+    question: "Is there existing code to migrate or integrate with?"
+    purpose: "Identify constraints and legacy considerations"
+    follow_up_triggers:
+      - keyword: "yes"
+        branch: migration
+
+# =============================================================================
+# DATABASE QUESTIONS (Triggered by stack choice or explicit mention)
+# =============================================================================
+database:
+  trigger_keywords: ["database", "mysql", "postgres", "supabase", "data", "store", "persist"]
+
+  questions:
+    - id: db_entities
+      question: "What are the main entities/tables? (e.g., users, orders, products)"
+      purpose: "Start schema design"
+
+    - id: db_relationships
+      question: "How do these entities relate? (one-to-many, many-to-many)"
+      purpose: "Define foreign keys and junction tables"
+
+    - id: db_audit
+      question: "Which data needs audit trails? (created_at, updated_at, deleted_at, changed_by)"
+      purpose: "Determine soft delete and audit column requirements"
+
+    - id: db_scale
+      question: "Expected data volume? (hundreds, thousands, millions of records)"
+      purpose: "Index and optimization strategy"
+      follow_up_triggers:
+        - keyword: "million"
+          branch: high_scale
+
+# =============================================================================
+# AUTHENTICATION QUESTIONS
+# =============================================================================
+auth:
+  trigger_keywords: ["auth", "login", "user", "account", "sign up", "register"]
+
+  questions:
+    - id: auth_method
+      question: "How do users authenticate? (email/password, OAuth, magic link, API key)"
+      purpose: "Determine auth implementation"
+      options:
+        - "Email/password"
+        - "OAuth (Google, GitHub, etc.)"
+        - "Magic link (passwordless)"
+        - "API key (for services)"
+        - "Multiple methods"
+
+    - id: auth_roles
+      question: "What user roles exist? (admin, user, guest, etc.)"
+      purpose: "Define permission system"
+      follow_up_triggers:
+        - keyword: "admin"
+          branch: admin_features
+
+    - id: auth_multi_tenant
+      question: "Is this multi-tenant? (each customer has isolated data)"
+      purpose: "Determine data isolation strategy"
+      follow_up_triggers:
+        - keyword: "yes"
+          branch: multi_tenant
+
+# =============================================================================
+# PAYMENTS QUESTIONS
+# =============================================================================
+payments:
+  trigger_keywords: ["payment", "stripe", "subscription", "pricing", "monetize", "charge", "billing"]
+
+  questions:
+    - id: payment_model
+      question: "Payment model? (one-time, subscription, usage-based, freemium)"
+      purpose: "Determine Stripe integration approach"
+      options:
+        - "One-time purchase"
+        - "Subscription (monthly/yearly)"
+        - "Usage-based"
+        - "Freemium (free + paid tiers)"
+        - "Not monetized yet"
+
+    - id: payment_tiers
+      question: "How many pricing tiers? Describe each briefly."
+      purpose: "Design pricing table and feature gates"
+      condition: "payment_model != 'Not monetized yet'"
+
+    - id: payment_free_tier
+      question: "What's included in the free tier? What's locked?"
+      purpose: "Define feature flags"
+      condition: "payment_model == 'Freemium'"
+
+# =============================================================================
+# API QUESTIONS
+# =============================================================================
+api:
+  trigger_keywords: ["api", "endpoint", "rest", "graphql", "webhook", "integration"]
+
+  questions:
+    - id: api_style
+      question: "API style? (REST, GraphQL, or internal only)"
+      purpose: "Determine API architecture"
+
+    - id: api_consumers
+      question: "Who consumes the API? (own frontend, mobile app, third parties)"
+      purpose: "Determine auth and rate limiting needs"
+      follow_up_triggers:
+        - keyword: "third"
+          branch: public_api
+
+    - id: api_versioning
+      question: "Need API versioning? (v1, v2, etc.)"
+      purpose: "Plan for backwards compatibility"
+      condition: "api_consumers includes 'third parties'"
+
+# =============================================================================
+# DEPLOYMENT QUESTIONS
+# =============================================================================
+deployment:
+  trigger_keywords: ["deploy", "host", "server", "production", "staging", "ci", "cd"]
+
+  questions:
+    - id: deploy_target
+      question: "Where will this run? (VPS, Vercel, Railway, self-hosted, etc.)"
+      purpose: "Determine deployment configuration"
+      options:
+        - "VPS (DigitalOcean, Linode, etc.)"
+        - "Vercel"
+        - "Railway"
+        - "Supabase Edge Functions"
+        - "Self-hosted (XAMPP, etc.)"
+        - "Not decided yet"
+
+    - id: deploy_ci
+      question: "CI/CD pipeline? (GitHub Actions, manual deploy)"
+      purpose: "Set up automation"
+
+    - id: deploy_staging
+      question: "Need a staging environment?"
+      purpose: "Determine environment strategy"
+
+# =============================================================================
+# SECURITY QUESTIONS
+# =============================================================================
+security:
+  trigger_keywords: ["security", "pii", "gdpr", "hipaa", "compliance", "sensitive", "encrypt"]
+
+  questions:
+    - id: security_pii
+      question: "Does this handle PII (names, emails, addresses, SSN, etc.)?"
+      purpose: "Determine data protection requirements"
+      follow_up_triggers:
+        - keyword: "yes"
+          branch: pii_handling
+
+    - id: security_compliance
+      question: "Any compliance requirements? (GDPR, HIPAA, SOC2, PCI)"
+      purpose: "Identify regulatory constraints"
+
+    - id: security_audit
+      question: "Need audit logging? (who did what, when)"
+      purpose: "Determine logging infrastructure"
+
+# =============================================================================
+# UI/UX QUESTIONS
+# =============================================================================
+ui:
+  trigger_keywords: ["ui", "design", "mobile", "responsive", "pwa", "app"]
+
+  questions:
+    - id: ui_platforms
+      question: "Target platforms? (desktop web, mobile web, native app, PWA)"
+      purpose: "Determine responsive and offline requirements"
+      follow_up_triggers:
+        - keyword: "pwa"
+          branch: pwa
+        - keyword: "native"
+          branch: native_app
+
+    - id: ui_design_system
+      question: "Using a design system? (Tailwind, custom, existing brand)"
+      purpose: "Determine CSS approach"
+
+    - id: ui_animations
+      question: "Need scroll animations or complex interactions? (GSAP, Framer Motion)"
+      purpose: "Determine animation library needs"
+
+# =============================================================================
+# INTEGRATION QUESTIONS
+# =============================================================================
+integrations:
+  trigger_keywords: ["integrate", "api", "third-party", "webhook", "sync", "import", "export"]
+
+  questions:
+    - id: int_external_apis
+      question: "What external APIs do you need to call? (payment, email, SMS, AI, etc.)"
+      purpose: "Identify dependencies and rate limits"
+
+    - id: int_webhooks
+      question: "Need to receive webhooks? From what services?"
+      purpose: "Plan webhook handling infrastructure"
+
+    - id: int_import_export
+      question: "Need data import/export? What formats? (CSV, JSON, PDF)"
+      purpose: "Determine file handling requirements"
+
+# =============================================================================
+# BRANCH CATEGORIES (Deeper dives triggered by answers)
+# =============================================================================
+branches:
+  multi_tenant:
+    questions:
+      - id: mt_isolation
+        question: "Data isolation method? (separate DBs, schema per tenant, row-level)"
+        purpose: "Determine multi-tenancy architecture"
+      - id: mt_subdomain
+        question: "Subdomain per tenant? (acme.yourapp.com)"
+        purpose: "Determine routing strategy"
+
+  high_scale:
+    questions:
+      - id: hs_caching
+        question: "Caching strategy? (Redis, in-memory, CDN)"
+        purpose: "Plan performance optimization"
+      - id: hs_queues
+        question: "Need background jobs/queues?"
+        purpose: "Determine async processing needs"
+
+  public_api:
+    questions:
+      - id: pa_rate_limit
+        question: "Rate limiting strategy? (per user, per API key, tiered)"
+        purpose: "Protect API from abuse"
+      - id: pa_docs
+        question: "Need API documentation? (OpenAPI/Swagger)"
+        purpose: "Plan documentation generation"
+
+  pwa:
+    questions:
+      - id: pwa_offline
+        question: "What should work offline?"
+        purpose: "Determine service worker caching strategy"
+      - id: pwa_sync
+        question: "How should offline changes sync when back online?"
+        purpose: "Plan conflict resolution"
+
+  admin_features:
+    questions:
+      - id: admin_dashboard
+        question: "What does the admin dashboard show? (users, analytics, content)"
+        purpose: "Define admin feature set"
+      - id: admin_impersonate
+        question: "Can admins impersonate users for support?"
+        purpose: "Determine support tooling"
+
+# =============================================================================
+# CLOSING QUESTIONS (Always Asked)
+# =============================================================================
+closing:
+  - id: constraints
+    question: "Any hard constraints? (deadline, budget, existing contracts, team size)"
+    purpose: "Identify non-negotiable limitations"
+
+  - id: similar_products
+    question: "What existing products are similar? What do you like/dislike about them?"
+    purpose: "Learn from prior art, avoid reinventing"
+
+  - id: success_metric
+    question: "How will you know this succeeded? (users, revenue, time saved)"
+    purpose: "Define success criteria for MVP"
+
+  - id: concerns
+    question: "What worries you most about this project?"
+    purpose: "Surface hidden risks and anxieties"

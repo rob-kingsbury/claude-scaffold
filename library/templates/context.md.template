@@ -1,0 +1,58 @@
+---
+project: {{PROJECT_NAME}}
+description: {{PROJECT_DESCRIPTION}}
+last_session: 0
+continue_with: "Initial setup"
+
+tech:
+  stack: {{STACK_TYPE}}
+  tools: [{{TECH_TOOLS}}]
+
+paths:
+  src: {{SRC_PATH}}
+  rules: .claude/rules/
+  credentials: .claude/credentials.md
+
+commands:
+  dev: {{DEV_COMMAND}}
+  build: {{BUILD_COMMAND}}
+  test: {{TEST_COMMAND}}
+---
+
+# {{PROJECT_NAME}} Context
+
+## Project Overview
+
+{{PROJECT_DESCRIPTION}}
+
+## Current Phase
+
+- **Phase 1**: Initial setup and scaffolding
+
+## Open Issues
+
+| # | Title | Labels |
+|---|-------|--------|
+| - | No issues yet | - |
+
+## Recent Changes
+
+_No sessions yet._
+
+---
+
+## Session Notes
+
+### Session 0 ({{DATE}}): Project Scaffolded
+
+**Setup:**
+- Created project structure
+- Initialized Git repository
+- Set up Claude Code configuration
+
+**Files created:**
+- CLAUDE.md
+- .claude/context.md
+- .claude/rules/*
+
+**Next:** Begin implementation per AMA dialog results

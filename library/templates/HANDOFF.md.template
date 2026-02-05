@@ -1,0 +1,62 @@
+# {{PROJECT_NAME}} - Handoff
+
+## Current Priority
+
+**Initial setup** - Begin implementing MVP features
+
+---
+
+## Status
+
+| Area | Status |
+|------|--------|
+| Setup | Complete |
+| Database | Pending |
+| Auth | Pending |
+| Core Features | Pending |
+| Testing | Pending |
+
+---
+
+## Blockers
+
+_None currently._
+
+---
+
+## Recent Decisions
+
+| Decision | Why | Date |
+|----------|-----|------|
+| Stack: {{STACK_TYPE}} | Based on requirements | {{DATE}} |
+
+---
+
+## Next Steps
+
+1. Set up database schema
+2. Implement authentication
+3. Build core MVP features
+
+---
+
+## Quick Commands
+
+```bash
+# Start development
+{{DEV_COMMAND}}
+
+# Check issues
+gh issue list --state open
+
+# Run tests
+{{TEST_COMMAND}}
+```
+
+---
+
+## To Resume
+
+```
+Continue working on {{PROJECT_NAME}}. Priority: Initial MVP setup.
+```

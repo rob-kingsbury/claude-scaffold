@@ -1,0 +1,86 @@
+# {{PROJECT_NAME}}
+
+{{PROJECT_DESCRIPTION}}
+
+---
+
+## SESSION START (REQUIRED)
+
+**Before ANY work**, Claude MUST:
+
+1. **Read context files:**
+   - `.claude/context.md` - Project state, recent changes
+   - `HANDOFF.md` - Current priorities (if exists)
+
+2. **Check GitHub Issues:**
+   ```bash
+   gh issue list --state open --limit 10
+   ```
+
+3. **Output confirmation:**
+   ```
+   {{PROJECT_NAME}} ready. [X] open issues. Priority: Issue #XX
+   Files loaded: context.md, HANDOFF.md
+   ```
+
+**DO NOT skip. DO NOT begin work without this confirmation.**
+
+---
+
+## COMMUNICATION STYLE
+
+- Facts only. No fluff, no hedging, no praise.
+- "I don't know" when uncertain.
+- Disagree when the user is wrong.
+- Research before building (check prior art).
+
+---
+
+## TODO = GITHUB ISSUE
+
+When user says "todo", "add to backlog", "remember to":
+- Create a GitHub Issue immediately
+- Confirm: "Created Issue #XX: [title]"
+
+---
+
+## SESSION END (REQUIRED)
+
+Before ending ANY session:
+
+1. **Tasks → GitHub Issues** (incomplete work = new issue)
+2. **Update context.md** (what was done)
+3. **Clean workspace:**
+   ```bash
+   find . -type d \( -name "temp_*" -o -name "test_*" \) -not -path "./.git/*"
+   find . -type d -empty -not -path "./.git/*"
+   ```
+4. **Commit and push**
+5. **Tell user:** `Continue with Issue #XX`
+
+---
+
+## QUICK REFERENCE
+
+| Command | Action |
+|---------|--------|
+| `{{DEV_COMMAND}}` | Start dev server |
+| `{{BUILD_COMMAND}}` | Build for production |
+| `gh issue list` | View open issues |
+
+---
+
+## REFERENCE FILES
+
+| File | Purpose | When to Read |
+|------|---------|--------------|
+| `.claude/context.md` | Project state | Session start |
+| `.claude/rules/*.md` | Code/CSS/DB rules | Before coding |
+| `.claude/schema.md` | Database schema | DB queries |
+
+---
+
+## PRIVACY FIRST
+
+- No PII in commits, memory, or uploads
+- Credentials in `.claude/credentials.md` (gitignored)

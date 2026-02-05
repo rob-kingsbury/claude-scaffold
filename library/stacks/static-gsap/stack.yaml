@@ -1,0 +1,90 @@
+# Static Site + GSAP Stack Template
+# Marketing sites with scroll animations
+
+name: static-gsap
+description: Static HTML site with GSAP animations and Lenis smooth scroll
+based_on: ["stompers-redesign", "gsap-animation-library"]
+
+tech:
+  frontend: HTML5, CSS3, JavaScript
+  animations: GSAP 3.12, ScrollTrigger, Lenis
+  build: Vite 7
+
+structure:
+  directories:
+    - src/
+    - src/css/
+    - src/js/
+    - src/img/
+    - public/
+    - .claude/
+    - .claude/rules/
+
+  files:
+    - path: index.html
+      template: index.html.template
+
+    - path: src/css/styles.css
+      template: styles.css.template
+
+    - path: src/js/main.js
+      template: main.js.template
+
+    - path: src/js/animations.js
+      template: animations.js.template
+
+    - path: vite.config.js
+      template: vite.config.js.template
+
+    - path: package.json
+      template: package.json.template
+
+    - path: .gitignore
+      template: gitignore.template
+
+    - path: CLAUDE.md
+      template: CLAUDE.md.template
+
+    - path: .claude/context.md
+      template: context.md.template
+
+    - path: .claude/workflows.yaml
+      copy_from: library/workflows/
+
+init_commands:
+  - "npm init -y"
+  - "npm install gsap lenis"
+  - "npm install -D vite"
+
+rules_to_copy:
+  - css-architecture.md
+  - development-workflow.md
+
+skills_to_copy:
+  - session-start
+  - handoff
+  - audit
+  - simplify
+
+conventions:
+  naming:
+    html_sections: data-section attribute
+    css_animations: kebab-case
+    js_modules: camelCase
+
+  patterns:
+    animation_init: "Initialize after DOM ready, register ScrollTrigger"
+    scroll_trigger: "Use data attributes for configuration"
+    lenis: "Initialize once, integrate with GSAP ticker"
+    responsive: "Disable complex animations on mobile if needed"
+
+  performance:
+    - Use will-change sparingly
+    - Prefer transform/opacity over layout properties
+    - Lazy load below-fold images
+    - Debounce resize handlers
+
+commands:
+  dev: "npm run dev"
+  build: "npm run build"
+  preview: "npm run preview"

@@ -1,0 +1,80 @@
+# Session Handoff Workflow
+# Triggered at end of work session to ensure clean context transfer
+
+name: handoff
+triggers:
+  - "handoff"
+  - "session handoff"
+  - "end session"
+  - "wrap up"
+  - "session end"
+
+steps:
+  1_check_uncommitted:
+    description: "Check for uncommitted changes"
+    command: "git status --porcelain"
+    on_output: "Note files to be committed"
+
+  2_persist_todos:
+    description: "Convert incomplete work to GitHub Issues"
+    action: |
+      For each incomplete todo or mentioned future work:
+      - gh issue create --title "..." --body "..." --label "..."
+      - Record issue number
+    skip_if: "No incomplete work"
+
+  3_cleanup_workspace:
+    description: "Remove temporary files and directories"
+    commands:
+      - find . -type d \( -name "temp_*" -o -name "test_*" \) -not -path "./.git/*"
+      - find . -type d -empty -not -path "./.git/*"
+      - find . \( -name "*.bak" -o -name "*.tmp" -o -name "*~" \) -not -path "./.git/*"
+      - ls *.zip *.csv *.log 2>/dev/null
+    action: "Ask user before deleting"
+
+  4_update_context:
+    description: "Update .claude/context.md with session notes"
+    action: |
+      - Increment last_session number
+      - Add session entry with date and summary
+      - Update continue_with field
+      - Prune old sessions (keep max 5)
+
+  5_update_handoff:
+    description: "Update HANDOFF.md with current state"
+    action: |
+      - Update Current Priority
+      - Update Status table
+      - Add any blockers
+      - Document decisions made
+      - List next steps
+
+  6_commit_all:
+    description: "Stage and commit all changes"
+    command: |
+      git add -A
+      git commit -m "Session [N]: [summary]
+
+      - [change 1]
+      - [change 2]
+
+      Co-Authored-By: Claude <noreply@anthropic.com>"
+
+  7_push:
+    description: "Push to remote"
+    command: "git push origin main"
+    if_fails: "Warn user, suggest git pull --rebase"
+
+  8_output_summary:
+    description: "Display handoff summary"
+    output: |
+      === HANDOFF COMPLETE ===
+
+      Session [N] finished.
+      - [X] files modified
+      - [X] issues created
+      - [X] issues closed
+
+      Next session: Continue with Issue #XX ([title])
+
+      To resume: "[Project] - continue with Issue #XX"

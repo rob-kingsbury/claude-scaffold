@@ -1,0 +1,114 @@
+# React + Supabase Stack Template
+# Modern SPA with serverless backend
+
+name: react-supabase
+description: React 19 SPA with Vite, TypeScript, Supabase
+based_on: ["bandpilot"]
+
+tech:
+  frontend: React 19, TypeScript 5
+  backend: Supabase (PostgreSQL + Auth + Storage)
+  css: Tailwind CSS 4
+  build: Vite 7
+  state: TanStack Query
+
+structure:
+  directories:
+    - src/
+    - src/components/
+    - src/components/ui/
+    - src/components/layout/
+    - src/contexts/
+    - src/hooks/
+    - src/lib/
+    - src/pages/
+    - src/types/
+    - public/
+    - .claude/
+    - .claude/rules/
+    - docs/
+
+  files:
+    - path: src/main.tsx
+      template: main.tsx.template
+
+    - path: src/App.tsx
+      template: App.tsx.template
+
+    - path: src/lib/supabase.ts
+      template: supabase.ts.template
+
+    - path: src/contexts/AuthContext.tsx
+      template: AuthContext.tsx.template
+
+    - path: src/hooks/useAuth.ts
+      template: useAuth.ts.template
+
+    - path: src/components/ui/Button.tsx
+      template: Button.tsx.template
+
+    - path: src/types/database.ts
+      template: database.ts.template
+
+    - path: .env.example
+      template: env.example.template
+
+    - path: .gitignore
+      template: gitignore.template
+
+    - path: CLAUDE.md
+      template: CLAUDE.md.template
+
+    - path: HANDOFF.md
+      template: HANDOFF.md.template
+
+    - path: .claude/context.md
+      template: context.md.template
+
+    - path: .claude/workflows.yaml
+      copy_from: library/workflows/
+
+init_commands:
+  - "npm create vite@latest . -- --template react-ts"
+  - "npm install @supabase/supabase-js @tanstack/react-query react-router zod"
+  - "npm install -D tailwindcss @tailwindcss/vite typescript @types/react"
+
+rules_to_copy:
+  - code-architecture.md
+  - css-architecture.md
+  - development-workflow.md
+  - security-checklist.md
+
+skills_to_copy:
+  - session-start
+  - handoff
+  - audit
+  - simplify
+  - fix-issue
+
+conventions:
+  naming:
+    components: PascalCase
+    hooks: camelCase with use prefix
+    utilities: camelCase
+    types: PascalCase
+    files_components: PascalCase.tsx
+    files_utils: kebab-case.ts
+
+  patterns:
+    component_structure: "hooks → derived → effects → handlers → early returns → render"
+    data_fetching: "TanStack Query with Supabase"
+    forms: "react-hook-form + zod validation"
+    auth: "Supabase Auth via context"
+
+  security:
+    - Row Level Security (RLS) on all tables
+    - Environment variables for secrets
+    - Zod validation on all inputs
+    - Type-safe database queries
+
+commands:
+  dev: "npm run dev"
+  build: "npm run build"
+  lint: "npm run lint"
+  types: "npx supabase gen types typescript"

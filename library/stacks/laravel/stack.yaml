@@ -1,0 +1,91 @@
+# Laravel Stack Template
+# SaaS applications with Livewire and Tailwind
+
+name: laravel
+description: Laravel SaaS with Livewire 3, Tailwind CSS 4
+based_on: ["daybook"]
+
+tech:
+  backend: Laravel 12
+  database: MySQL 8.0+ or PostgreSQL
+  frontend: Livewire 3, Alpine.js
+  css: Tailwind CSS 4
+  build: Vite 7
+
+structure:
+  # Laravel creates most structure via `laravel new`
+  # This defines additional files to create
+
+  directories:
+    - .claude/
+    - .claude/rules/
+    - .claude/skills/
+    - docs/
+
+  files:
+    - path: CLAUDE.md
+      template: CLAUDE.md.template
+
+    - path: HANDOFF.md
+      template: HANDOFF.md.template
+
+    - path: .claude/context.md
+      template: context.md.template
+
+    - path: .claude/schema.md
+      template: schema.md.template
+
+    - path: .claude/workflows.yaml
+      copy_from: library/workflows/
+
+    - path: docs/USER_GUIDE.md
+      template: USER_GUIDE.md.template
+
+init_commands:
+  - "composer create-project laravel/laravel . --prefer-dist"
+  - "composer require livewire/livewire"
+  - "composer require laravel/cashier"  # If payments
+  - "npm install"
+  - "npm install -D tailwindcss @tailwindcss/vite"
+
+rules_to_copy:
+  - code-architecture.md
+  - css-architecture.md
+  - database-queries.md
+  - development-workflow.md
+  - security-checklist.md
+
+skills_to_copy:
+  - session-start
+  - handoff
+  - audit
+  - simplify
+  - fix-issue
+
+conventions:
+  naming:
+    controllers: PascalCase + Controller suffix
+    models: PascalCase singular
+    migrations: snake_case with timestamp
+    livewire: PascalCase
+    views: kebab-case
+
+  patterns:
+    thin_controllers: "Delegate to services, no business logic"
+    form_requests: "Validation in FormRequest classes"
+    policies: "Authorization via Policy classes"
+    scopes: "Reusable query logic via Eloquent scopes"
+
+  security:
+    - Gates and Policies for authorization
+    - FormRequest validation
+    - Blade auto-escapes {{ }}
+    - CSRF via @csrf directive
+    - Rate limiting via middleware
+
+commands:
+  dev: "php artisan serve"
+  build: "npm run build"
+  test: "php artisan test"
+  migrate: "php artisan migrate"
+  fresh: "php artisan migrate:fresh --seed"
