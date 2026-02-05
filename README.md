@@ -103,11 +103,14 @@ your-project/
 | **performance** | Performance analysis and optimization |
 | **accessibility** | WCAG compliance auditing and fixes |
 
-### Documentation & APIs
+### Documentation & Configuration
 | Skill | Description |
 |-------|-------------|
 | **api-docs** | Generate API documentation (OpenAPI, markdown, JSDoc) |
 | **db-migrate** | Database migration management |
+| **changelog** | Auto-generate CHANGELOG.md from conventional commits |
+| **adr** | Architecture Decision Records for documenting technical decisions |
+| **env** | Environment setup, .env templates, validation, and documentation |
 
 ### Git & Deployment
 | Skill | Description |

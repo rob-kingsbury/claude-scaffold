@@ -6,23 +6,23 @@ Compiled from research agents + ecosystem knowledge. Prioritized by value/effort
 
 ## Skills Ideas
 
-### Currently Have (24 skills)
+### Currently Have (28 skills)
 - [x] session-start, handoff, agents (Session Management)
-- [x] plan, personas, frontend-design, interface-design (Planning & Design)
+- [x] plan, personas, frontend-design, interface-design, research (Planning & Design)
 - [x] tdd, debug, fix-issue, testing, refactor (Development)
 - [x] audit, code-review, simplify, performance, accessibility (Quality)
-- [x] api-docs, db-migrate (Documentation)
+- [x] api-docs, db-migrate, changelog, adr, env (Documentation & Config)
 - [x] git-workflow, pr-create, deploy, docker, ci-cd (Git & Deploy)
 
 ### High Priority (Would use frequently)
 
 | Skill | Description | Effort |
 |-------|-------------|--------|
-| **changelog** | Auto-generate CHANGELOG.md from commits (conventional commits) | Low |
-| **adr** | Architecture Decision Records - document why decisions were made | Low |
+| ~~**changelog**~~ | ~~Auto-generate CHANGELOG.md from commits (conventional commits)~~ | DONE |
+| ~~**adr**~~ | ~~Architecture Decision Records - document why decisions were made~~ | DONE |
 | **roadmap** | Project roadmap generation, milestone tracking, priority visualization | Low |
 | **deps** | Dependency audit, updates, security vulnerabilities (npm audit, etc.) | Medium |
-| **env** | Environment setup - .env templates, validation, documentation | Low |
+| ~~**env**~~ | ~~Environment setup - .env templates, validation, documentation~~ | DONE |
 | **secrets** | Secret detection, rotation reminders, vault integration | Medium |
 | **migrations** | Database migration generation and verification | Medium |
 | **storybook** | Component documentation and visual testing setup | Medium |
@@ -259,9 +259,9 @@ EFFORT                      │                      │  EFFORT
 ### Now (Quick Wins)
 - [x] ~~pii-blocker hook~~ DONE
 - [x] ~~secrets-blocker hook~~ DONE
-- [ ] **changelog** - Auto-generate from conventional commits
-- [ ] **adr** - Architecture decision records
-- [ ] **env** - Environment setup templates
+- [x] ~~changelog~~ DONE - Auto-generate from conventional commits
+- [x] ~~adr~~ DONE - Architecture decision records
+- [x] ~~env~~ DONE - Environment setup templates
 
 ### Next (High Value)
 - [ ] **roadmap** - Project roadmap from GitHub issues
