@@ -1,0 +1,67 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "description": "Example Claude Code hooks configuration",
+
+  "hooks": {
+    "PreToolUse": [
+      {
+        "type": "command",
+        "command": "node .claude/hooks/branch-protection.js",
+        "filter": {
+          "tool": "Bash"
+        },
+        "description": "Prevent dangerous git operations on protected branches"
+      }
+    ],
+
+    "PostToolUse": [
+      {
+        "type": "command",
+        "command": "bash .claude/hooks/auto-format.sh",
+        "filter": {
+          "tool": ["Edit", "Write"]
+        },
+        "description": "Auto-format code after edits"
+      },
+      {
+        "type": "command",
+        "command": "bash .claude/hooks/run-tests.sh",
+        "filter": {
+          "tool": ["Edit", "Write"]
+        },
+        "description": "Run related tests after code changes"
+      }
+    ],
+
+    "UserPromptSubmit": [
+      {
+        "type": "command",
+        "command": "node .claude/hooks/skill-suggester.js",
+        "description": "Suggest relevant skills based on user prompt"
+      }
+    ],
+
+    "Stop": [
+      {
+        "type": "command",
+        "command": "bash .claude/hooks/session-summary.sh",
+        "description": "Generate session summary when Claude stops"
+      }
+    ]
+  },
+
+  "permissions": {
+    "allow": [
+      "Bash(npm run *)",
+      "Bash(git *)",
+      "Bash(gh *)",
+      "Read(*)",
+      "Edit(*)",
+      "Write(*)"
+    ],
+    "deny": [
+      "Bash(rm -rf /)",
+      "Bash(sudo *)"
+    ]
+  }
+}

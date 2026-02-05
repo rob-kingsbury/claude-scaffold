@@ -41,7 +41,7 @@ Project scaffolding system for Claude Code with battle-tested patterns extracted
 
 ```
 your-project/
-├── CLAUDE.md                 # Project governance & communication style
+├── CLAUDE.md                 # Project governance
 ├── HANDOFF.md                # Session continuity
 ├── .claude/
 │   ├── context.md            # Project state (YAML + markdown)
@@ -50,15 +50,84 @@ your-project/
 │   │   ├── code-architecture.md
 │   │   ├── css-architecture.md
 │   │   ├── database-queries.md
-│   │   └── development-workflow.md
+│   │   ├── development-workflow.md
+│   │   └── security-checklist.md
 │   ├── skills/
 │   │   ├── session-start/
 │   │   ├── handoff/
-│   │   └── audit/
+│   │   ├── audit/
+│   │   └── [more skills...]
+│   ├── hooks/                # Optional automation hooks
 │   └── workflows.yaml
 ├── .gitignore
 └── [stack-specific files]
 ```
+
+## Skills Library
+
+### Session Management
+| Skill | Description |
+|-------|-------------|
+| **session-start** | Initialize work sessions, load context, check issues |
+| **handoff** | End-of-session cleanup, commit, and context preservation |
+
+### Development Workflow
+| Skill | Description |
+|-------|-------------|
+| **tdd** | Test-Driven Development with Red-Green-Refactor cycle |
+| **debug** | Systematic debugging: reproduce, isolate, identify, fix, verify |
+| **fix-issue** | Load GitHub issue context and implement the solution |
+| **plan** | Strategic planning and brainstorming before implementation |
+
+### Code Quality
+| Skill | Description |
+|-------|-------------|
+| **audit** | Security, quality, and accessibility audits |
+| **code-review** | Comprehensive PR/code review checklist |
+| **simplify** | Refactor for clarity without changing behavior |
+
+### Git & Collaboration
+| Skill | Description |
+|-------|-------------|
+| **git-workflow** | Branching strategy, conventional commits, PR flow |
+| **pr-create** | Create well-structured pull requests |
+
+### Design & UI
+| Skill | Description |
+|-------|-------------|
+| **frontend-design** | Distinctive, production-grade UI avoiding generic AI aesthetics |
+| **interface-design** | Systematic design tokens, consistency, and component patterns |
+
+## Hooks Library
+
+Hooks provide deterministic automation at specific points in Claude Code's lifecycle.
+
+| Hook | Event | Purpose |
+|------|-------|---------|
+| **branch-protection.js** | PreToolUse | Block dangerous git operations on main |
+| **auto-format.sh** | PostToolUse | Format code after edits |
+| **run-tests.sh** | PostToolUse | Run related tests after changes |
+
+See `library/hooks/README.md` for configuration details.
+
+## Rules Library
+
+| Rule | Purpose |
+|------|---------|
+| **code-architecture.md** | PHP/JS/TS coding standards, patterns |
+| **css-architecture.md** | Mobile-first CSS, variables, BEM |
+| **database-queries.md** | Query safety, schema management |
+| **development-workflow.md** | Session management, commits, issues |
+| **security-checklist.md** | OWASP-aligned security checks |
+
+## Workflows
+
+| Workflow | Trigger | Purpose |
+|----------|---------|---------|
+| **handoff** | "handoff", "end session" | Clean session end |
+| **status** | "status" | Project overview |
+| **audit** | "audit" | Run codebase audits |
+| **sync** | "sync docs" | Keep documentation current |
 
 ## The AMA Dialog
 
@@ -85,12 +154,12 @@ Results are saved to `~/.claude/scaffold/dialogs/{project}.md` for future refere
 ### Global (Recommended)
 
 ```bash
-# Clone to htdocs (version controlled)
+# Clone to your projects directory
 git clone https://github.com/rob-kingsbury/claude-scaffold.git ~/projects/claude-scaffold
 
-# Symlink to ~/.claude (global access)
-# Windows:
-mklink /D "%USERPROFILE%\.claude\scaffold" "C:\path\to\claude-scaffold"
+# Create junction/symlink to ~/.claude/scaffold
+# Windows (run as admin or use junction):
+mklink /J "%USERPROFILE%\.claude\scaffold" "C:\path\to\claude-scaffold"
 
 # macOS/Linux:
 ln -s ~/projects/claude-scaffold ~/.claude/scaffold
@@ -98,32 +167,7 @@ ln -s ~/projects/claude-scaffold ~/.claude/scaffold
 
 ### Per-Project
 
-Copy the `library/` contents into your project's `.claude/` folder.
-
-## Included Patterns
-
-### Rules Library
-
-- **code-architecture.md** - PHP/JS/TS coding standards
-- **css-architecture.md** - Mobile-first CSS with variables
-- **database-queries.md** - Query safety and schema management
-- **development-workflow.md** - Session management, commits, issues
-- **security-checklist.md** - OWASP-aligned security checks
-
-### Skills Library
-
-- **session-start** - Initialize work sessions properly
-- **handoff** - Clean session handoff with context preservation
-- **audit** - Security, quality, and accessibility audits
-- **simplify** - Refactor for clarity without changing behavior
-- **fix-issue** - Load GitHub issue and implement fix
-
-### Workflows
-
-- **handoff.yaml** - End-of-session automation
-- **status.yaml** - Project status overview
-- **audit.yaml** - Codebase audit triggers
-- **sync.yaml** - Documentation sync
+Copy specific items from `library/` into your project's `.claude/` folder.
 
 ## Existing Project Handling
 
@@ -133,12 +177,25 @@ If `.claude/` already exists when scaffolding, you'll be asked:
 - **Replace** - Overwrite with fresh scaffold
 - **Cancel** - Abort scaffolding
 
+## Resources & Inspiration
+
+This scaffold system was informed by:
+
+- [Anthropic Official Skills](https://github.com/anthropics/skills)
+- [awesome-claude-skills](https://github.com/travisvn/awesome-claude-skills)
+- [awesome-claude-code](https://github.com/hesreallyhim/awesome-claude-code)
+- [Claude Code Showcase](https://github.com/ChrisWiles/claude-code-showcase)
+- [Interface Design Plugin](https://github.com/Dammyjay93/interface-design)
+- [Superpowers Skills](https://github.com/obra/superpowers)
+- [Trail of Bits Security Skills](https://github.com/trailofbits)
+
 ## Contributing
 
-This is a personal scaffolding system but PRs are welcome for:
+PRs welcome for:
 - New stack templates
+- Additional skills
 - Improved rules/patterns
-- Bug fixes in skills
+- Hook examples
 
 ## License
 
