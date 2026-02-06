@@ -50,9 +50,15 @@ steps:
       - List next steps
 
   6_commit_all:
-    description: "Stage and commit all changes"
+    description: "Stage and commit all changes (with safety check)"
     command: |
       git add -A
+      git diff --cached --name-only
+    action: |
+      Review the staged file list for sensitive files (.env, .pem, credentials, keys).
+      If any are staged, unstage them: git reset HEAD <file>
+      Then verify .gitignore covers sensitive paths.
+      Finally commit:
       git commit -m "Session [N]: [summary]
 
       - [change 1]

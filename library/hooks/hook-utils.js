@@ -95,6 +95,35 @@ function shouldSkipFile(filePath, extraPatterns = []) {
 }
 
 /**
+ * Check if a context pattern matches within N lines of a match position.
+ * Used to require nearby keywords (e.g., "aws" near an access key).
+ * @param {string} content - Full file content
+ * @param {number} matchIndex - Character index of the match
+ * @param {RegExp} contextPattern - Pattern to search for nearby
+ * @param {number} lineRadius - Number of lines above/below to check (default 3)
+ * @returns {boolean}
+ */
+function hasNearbyContext(content, matchIndex, contextPattern, lineRadius = 3) {
+    const lines = content.split('\n');
+    let charCount = 0;
+    let matchLine = 0;
+
+    for (let i = 0; i < lines.length; i++) {
+        charCount += lines[i].length + 1;
+        if (charCount > matchIndex) {
+            matchLine = i;
+            break;
+        }
+    }
+
+    const startLine = Math.max(0, matchLine - lineRadius);
+    const endLine = Math.min(lines.length - 1, matchLine + lineRadius);
+    const nearbyText = lines.slice(startLine, endLine + 1).join('\n');
+
+    return contextPattern.test(nearbyText);
+}
+
+/**
  * Check if a matched value is in an allowlist.
  * @param {string} value - The matched string to check
  * @param {RegExp[]} patterns - Allowlist patterns
@@ -165,6 +194,7 @@ module.exports = {
     readStdin,
     parseHookEvent,
     shouldSkipFile,
+    hasNearbyContext,
     isAllowlisted,
     deduplicateFindings,
     formatFindings,

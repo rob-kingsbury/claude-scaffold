@@ -7,16 +7,16 @@
 
 ---
 
-## Overall Score: 9.1 / 10
+## Overall Score: 9.4 / 10
 
 | Category | Score | Notes |
 |----------|-------|-------|
 | Skills Library (35 skills) | 9.5/10 | Consistent structure, good quality, no broken cross-refs |
 | Rules (7 rules) | 9.0/10 | Well-written, comprehensive |
-| Hooks (11 hooks) | 9.0/10 | Shared hook-utils.js, fail-closed, Luhn, sanitized notifications, robust branch protection |
+| Hooks (11 hooks) | 9.5/10 | Shared hook-utils.js, fail-closed, Luhn, sanitized notifications, robust branch protection, line-proximate context, path validation |
 | Stacks (8 stacks) | 7.0/10 | Two incompatible formats, heavy duplication, missing templates |
-| Workflows (4 workflows) | 8.0/10 | Fixed regex/branch bugs, minor duplication with skills |
-| MCP Configs (3 + README) | 8.5/10 | Fixed non-existent servers, good env var usage |
+| Workflows (4 workflows) | 8.5/10 | Fixed regex/branch bugs, staged file review, minor duplication with skills |
+| MCP Configs (3 + README) | 9.0/10 | Fixed non-existent servers, good env var usage, npx risk documented |
 | Autopilot Scripts | 9.0/10 | Best security practices in project (path validation, atomic writes) |
 | Documentation | 9.0/10 | HANDOFF, FUNCTIONS.md, AUDIT-REPORT.md all current |
 
@@ -66,19 +66,19 @@
 
 ~~**H5. No Luhn validation on credit card detection**~~ FIXED: Added `luhnCheck()` function as validator on both CC patterns.
 
-### MEDIUM (9)
+### MEDIUM (1 remaining)
 
 | ID | Issue | File | Fix |
 |----|-------|------|-----|
-| M1 | AWS context check file-wide, not line-proximate | secrets-blocker.js:90 | Check context within 3 lines of match |
-| M2 | Heroku pattern matches all UUIDs when "heroku" in file | secrets-blocker.js:235 | Tighten context to nearby lines |
+| ~~M1~~ | ~~AWS context check file-wide, not line-proximate~~ | ~~secrets-blocker.js~~ | FIXED: `matchAll` + `hasNearbyContext()` checks within 3 lines |
+| ~~M2~~ | ~~Heroku pattern matches all UUIDs when "heroku" in file~~ | ~~secrets-blocker.js~~ | FIXED: Same line-proximate context check |
 | ~~M3~~ | ~~Allowlist patterns missing `$` end-anchor~~ | ~~secrets-blocker.js~~ | FIXED: Added `$` anchors to exact-match patterns |
 | M4 | No base64/multi-line secret detection | secrets-blocker.js | Add base64 decode + rescan for long strings |
-| M5 | SSN 9-digit pattern very broad | pii-blocker.js:71 | Require nearby context ("SSN", "social security") |
-| M6 | Phone pattern matches any 10-digit number | pii-blocker.js:92 | Require separator or prefix |
-| M7 | npx -y auto-installs without version pinning | All MCP configs | Pin versions or document risk |
-| M8 | git add -A in handoff workflow | handoff.yaml:54 | Verify .gitignore before staging all |
-| M9 | run-tests.sh no project root validation | run-tests.sh:21 | Validate file path within project |
+| ~~M5~~ | ~~SSN 9-digit pattern very broad~~ | ~~pii-blocker.js~~ | FIXED: Added `context: /\bssn\b\|social.?security\|tax.?id/i` |
+| ~~M6~~ | ~~Phone pattern matches any 10-digit number~~ | ~~pii-blocker.js~~ | FIXED: Validator requires separator or `+1` prefix |
+| ~~M7~~ | ~~npx -y auto-installs without version pinning~~ | ~~MCP configs~~ | FIXED: Documented risk + mitigation in MCP README |
+| ~~M8~~ | ~~git add -A in handoff workflow~~ | ~~handoff.yaml~~ | FIXED: Added staged file review step before commit |
+| ~~M9~~ | ~~run-tests.sh no project root validation~~ | ~~run-tests.sh~~ | FIXED: Path traversal + project root validation in both shell hooks |
 
 ### LOW (8)
 
@@ -166,7 +166,7 @@ audit.yaml duplicates audit/SKILL.md patterns. handoff.yaml duplicates handoff/S
 ## Positive Findings
 
 - **Zero regressions** from session 1 fixes
-- **All 9 JS hooks pass syntax check** (`node -c`)
+- **All JS hooks pass syntax check** (`node -c`), all shell hooks pass (`bash -n`)
 - **All JSON configs are valid**
 - **Skills library is excellent** -- 35 skills, consistent structure, good cross-references
 - **Rules are comprehensive** -- 7 rules covering architecture, CSS, DB, workflow, security, API, thinking

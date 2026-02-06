@@ -3,7 +3,7 @@
 Living document cataloging all reusable functions, utilities, and patterns across claude-scaffold.
 
 **Last Updated:** 2026-02-06
-**Total Functions:** 63 (52 original + 8 hook-utils + 3 new)
+**Total Functions:** 64 (52 original + 9 hook-utils + 3 new)
 
 ---
 
@@ -29,7 +29,8 @@ Extracted shared utilities used by pii-blocker, secrets-blocker, and branch-prot
 | `readStdin` | 38 | `{failClosed}` | Promise\<Object\> | Async stdin reader; exits 2 on error if failClosed |
 | `parseHookEvent` | 67 | `event` | `{filePath, content}` | Extracts file_path and content from hook event |
 | `shouldSkipFile` | 79 | `filePath, extraPatterns[]` | boolean | Skip binary/vendor/lock files; accepts extra patterns |
-| `isAllowlisted` | 94 | `value, patterns[]` | boolean | Check value against configurable allowlist |
+| `hasNearbyContext` | 97 | `content, matchIndex, contextPattern, lineRadius` | boolean | Check if context pattern matches within N lines of a match position |
+| `isAllowlisted` | 120 | `value, patterns[]` | boolean | Check value against configurable allowlist |
 | `deduplicateFindings` | 104 | `findings[]` | `findings[]` | Dedup by type:masked key |
 | `formatFindings` | 118 | `findings[], limit` | `{list, more}` | Format for stderr display |
 | `allowAndExit` | 131 | none | void | `process.stdout.write('{}'); process.exit(0)` |

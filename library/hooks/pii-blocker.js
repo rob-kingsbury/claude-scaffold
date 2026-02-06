@@ -29,6 +29,7 @@ const {
     readStdin,
     parseHookEvent,
     shouldSkipFile,
+    hasNearbyContext,
     isAllowlisted,
     deduplicateFindings,
     formatFindings,
@@ -81,12 +82,13 @@ const PII_PATTERNS = [
     {
         name: 'Social Security Number (no dashes)',
         pattern: /\b(?<!\d)\d{9}(?!\d)\b/g,
+        context: /\bssn\b|social.?security|tax.?id/i,
         validator: (match) => {
             // SSNs don't start with 000 or 666 (9xx valid since 2011 randomization)
             const firstThree = match.substring(0, 3);
             return firstThree !== '000' && firstThree !== '666';
         },
-        description: 'Format: XXXXXXXXX'
+        description: 'Format: XXXXXXXXX (requires nearby SSN/social security context)'
     },
     {
         name: 'Credit Card Number',
@@ -103,6 +105,10 @@ const PII_PATTERNS = [
     {
         name: 'US Phone Number',
         pattern: /\b(?:\+1[-.\s]?)?\(?\d{3}\)?[-.\s]?\d{3}[-.\s]?\d{4}\b/g,
+        validator: (match) => {
+            // Require at least one separator or +1 prefix to avoid matching bare 10-digit numbers
+            return /[().\s-]/.test(match) || /^\+1/.test(match);
+        },
         description: 'Format: (XXX) XXX-XXXX or variants'
     },
     {
@@ -126,22 +132,28 @@ function detectPII(content) {
     const findings = [];
 
     for (const pii of PII_PATTERNS) {
-        const matches = content.match(pii.pattern);
-        if (matches) {
-            for (const match of matches) {
-                if (isAllowlisted(match, ALLOWLIST_PATTERNS)) continue;
-                if (pii.validator && !pii.validator(match)) continue;
+        pii.pattern.lastIndex = 0;
 
-                const masked = match.length > 6
-                    ? match.substring(0, 3) + '*'.repeat(match.length - 6) + match.substring(match.length - 3)
-                    : '***';
+        for (const m of content.matchAll(pii.pattern)) {
+            const match = m[0];
 
-                findings.push({
-                    type: pii.name,
-                    masked: masked,
-                    description: pii.description
-                });
+            // If pattern requires nearby context, check within 3 lines
+            if (pii.context && !hasNearbyContext(content, m.index, pii.context)) {
+                continue;
             }
+
+            if (isAllowlisted(match, ALLOWLIST_PATTERNS)) continue;
+            if (pii.validator && !pii.validator(match)) continue;
+
+            const masked = match.length > 6
+                ? match.substring(0, 3) + '*'.repeat(match.length - 6) + match.substring(match.length - 3)
+                : '***';
+
+            findings.push({
+                type: pii.name,
+                masked: masked,
+                description: pii.description
+            });
         }
     }
 

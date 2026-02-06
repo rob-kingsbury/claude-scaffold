@@ -24,6 +24,17 @@ if [ -z "$FILE" ]; then
     exit 0
 fi
 
+# Reject paths outside project (path traversal protection)
+if [[ "$FILE" == *../* ]]; then
+    exit 0
+fi
+if [[ "$FILE" == /* ]]; then
+    PROJECT_ROOT=$(git rev-parse --show-toplevel 2>/dev/null || pwd)
+    if [[ "$FILE" != "$PROJECT_ROOT"* ]]; then
+        exit 0
+    fi
+fi
+
 # Skip if the file itself is a test
 if [[ "$FILE" == *test* ]] || [[ "$FILE" == *spec* ]]; then
     exit 0

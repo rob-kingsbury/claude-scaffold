@@ -33,6 +33,7 @@ const {
     readStdin,
     parseHookEvent,
     shouldSkipFile,
+    hasNearbyContext,
     isAllowlisted,
     deduplicateFindings,
     formatFindings,
@@ -235,32 +236,33 @@ function detectSecrets(content, filePath) {
     const findings = [];
 
     for (const secret of SECRET_PATTERNS) {
-        // If pattern requires context, check for it first
-        if (secret.context && !secret.context.test(content)) {
-            continue;
-        }
+        secret.pattern.lastIndex = 0;
 
-        const matches = content.match(secret.pattern);
-        if (matches) {
-            for (const match of matches) {
-                // Extract the actual secret (may be in a capture group)
-                const actual = match.replace(/^.*[:=]\s*['"]?/, '').replace(/['"]?\s*$/, '');
+        for (const m of content.matchAll(secret.pattern)) {
+            const match = m[0];
 
-                if (isAllowlisted(actual, ALLOWLIST_PATTERNS) || isAllowlisted(match, ALLOWLIST_PATTERNS)) continue;
-                if (secret.validator && !secret.validator(actual)) continue;
-
-                // Mask for display
-                const toMask = actual.length > 8 ? actual : match;
-                const masked = toMask.length > 10
-                    ? toMask.substring(0, 4) + '*'.repeat(Math.min(toMask.length - 8, 16)) + toMask.substring(toMask.length - 4)
-                    : '***';
-
-                findings.push({
-                    type: secret.name,
-                    masked: masked,
-                    description: secret.description
-                });
+            // If pattern requires context, check within 3 lines of the match
+            if (secret.context && !hasNearbyContext(content, m.index, secret.context)) {
+                continue;
             }
+
+            // Extract the actual secret (may be in a capture group)
+            const actual = match.replace(/^.*[:=]\s*['"]?/, '').replace(/['"]?\s*$/, '');
+
+            if (isAllowlisted(actual, ALLOWLIST_PATTERNS) || isAllowlisted(match, ALLOWLIST_PATTERNS)) continue;
+            if (secret.validator && !secret.validator(actual)) continue;
+
+            // Mask for display
+            const toMask = actual.length > 8 ? actual : match;
+            const masked = toMask.length > 10
+                ? toMask.substring(0, 4) + '*'.repeat(Math.min(toMask.length - 8, 16)) + toMask.substring(toMask.length - 4)
+                : '***';
+
+            findings.push({
+                type: secret.name,
+                masked: masked,
+                description: secret.description
+            });
         }
     }
 

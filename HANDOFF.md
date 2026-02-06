@@ -1,7 +1,7 @@
 # Claude Scaffold - Session Handoff
 
 **Last Updated:** 2026-02-06
-**Last Commit:** Security + DRY fixes (hook-utils.js, fail-closed, branch protection, Luhn, sanitization)
+**Last Commit:** Medium-priority fixes (line-proximate context, SSN/phone false positives, path validation, handoff safety)
 
 ## What Was Done This Session
 
@@ -27,8 +27,8 @@
 ### High Priority (1 remaining)
 - H2: Regex detection inherently bypassable via obfuscation (known limitation, documented)
 
-### Medium Priority (8 remaining)
-- Context check breadth (AWS, Heroku), base64 detection, SSN/phone false positives, npx versioning, git add -A in handoff, run-tests.sh path validation
+### Medium Priority (1 remaining)
+- M4: No base64/multi-line secret detection (secrets-blocker.js)
 
 ## Priority Queue
 
@@ -47,7 +47,7 @@
 | File | Purpose |
 |------|---------|
 | `AUDIT-REPORT.md` | Full quality report with all open issues |
-| `FUNCTIONS.md` | Living catalog of 52 functions |
+| `FUNCTIONS.md` | Living catalog of 64 functions |
 | `IDEAS.md` | Full backlog with priorities |
 | `library/hooks/*.js` | All hooks (11 total, all verified working) |
 | `library/mcp/*.json` | MCP configs (3 stack-specific + global README) |

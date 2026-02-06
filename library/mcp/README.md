@@ -115,6 +115,7 @@ Location: `.claude/settings.local.json` (gitignored)
 2. **Use environment variables** - Never hardcode credentials in config files
 3. **Project-local configs** - Keep sensitive MCP configs in gitignored files
 4. **Principle of least privilege** - Only enable servers you actually need
+5. **npx auto-install risk** - `npx -y` auto-installs packages without version pinning, which could pull a compromised version. For production setups, consider installing MCP servers globally with pinned versions (`npm install -g @anthropic/mcp-server-filesystem@1.x`) and using the binary directly instead of npx
 
 ## Tool Search
 
