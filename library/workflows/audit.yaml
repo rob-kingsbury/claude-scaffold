@@ -31,14 +31,16 @@ steps:
         severity: CRITICAL
 
       - name: "SQL injection risk"
-        pattern: "(SELECT|INSERT|UPDATE|DELETE).*\\$"
+        pattern: "(SELECT|INSERT|UPDATE|DELETE).*\\$_(GET|POST|REQUEST|COOKIE)"
         file_types: ["*.php"]
         severity: HIGH
+        note: "Flags direct use of superglobals in SQL; prepared statements are safe"
 
       - name: "XSS risk (unescaped output)"
-        pattern: "echo\\s+\\$|print\\s+\\$"
+        pattern: "echo\\s+\\$_(GET|POST|REQUEST)|print\\s+\\$_(GET|POST|REQUEST)"
         file_types: ["*.php"]
         severity: HIGH
+        note: "Flags direct echo of superglobals; htmlspecialchars() output is safe"
 
       - name: "Dangerous functions"
         pattern: "\\b(eval|exec|shell_exec|system|passthru)\\s*\\("

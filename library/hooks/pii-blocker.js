@@ -9,8 +9,9 @@
  * Detects:
  * - Social Security Numbers (XXX-XX-XXXX)
  * - Credit card numbers (various formats, Luhn-validated)
- * - Phone numbers (US formats)
+ * - Phone numbers (US and international formats)
  * - Email addresses (real-looking, not @example.com)
+ * - IBAN (International Bank Account Numbers)
  * - IP addresses (non-localhost, non-private)
  *
  * Usage in .claude/settings.json:
@@ -110,6 +111,21 @@ const PII_PATTERNS = [
             return /[().\s-]/.test(match) || /^\+1/.test(match);
         },
         description: 'Format: (XXX) XXX-XXXX or variants'
+    },
+    {
+        name: 'International Phone Number',
+        pattern: /\b\+(?!1[-.\s]?\d)(\d{1,3})[-.\s]?\(?\d{1,4}\)?[-.\s]?\d{2,4}[-.\s]?\d{2,4}\b/g,
+        description: 'International phone with country code (non-US)'
+    },
+    {
+        name: 'IBAN',
+        pattern: /\b[A-Z]{2}\d{2}[A-Z0-9]{4}\d{7,30}\b/g,
+        validator: (match) => {
+            const cc = match.substring(0, 2);
+            const valid = ['GB','DE','FR','ES','IT','NL','BE','AT','CH','IE','PT','SE','NO','DK','FI','PL','CZ','SK','HU','RO','BG','HR','SI','LT','LV','EE','LU','MT','CY','GR','SA','AE','QA','BH','KW','IL'];
+            return valid.includes(cc);
+        },
+        description: 'International Bank Account Number'
     },
     {
         name: 'Email Address (potential PII)',

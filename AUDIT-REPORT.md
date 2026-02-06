@@ -7,7 +7,7 @@
 
 ---
 
-## Overall Score: 9.5 / 10
+## Overall Score: 9.7 / 10
 
 | Category | Score | Notes |
 |----------|-------|-------|
@@ -82,18 +82,18 @@
 | ~~M8~~ | ~~git add -A in handoff workflow~~ | ~~handoff.yaml~~ | FIXED: Added staged file review step before commit |
 | ~~M9~~ | ~~run-tests.sh no project root validation~~ | ~~run-tests.sh~~ | FIXED: Path traversal + project root validation in both shell hooks |
 
-### LOW (5 remaining)
+### LOW (0) -- All resolved
 
 | ID | Issue | File |
 |----|-------|------|
-| L1 | JWT detection flags test JWTs in test files | secrets-blocker.js |
-| L2 | Generic API key regex inconsistent quote handling | secrets-blocker.js |
+| ~~L1~~ | ~~JWT detection flags test JWTs in test files~~ | FIXED: Validator decodes payload, skips test/example/localhost subjects/issuers |
+| ~~L2~~ | ~~Generic API key regex inconsistent quote handling~~ | FIXED: Backreference `\1` ensures balanced quotes |
 | ~~L3~~ | ~~Email pattern missing @invalid. exclusion~~ | FIXED in prior commit (pii-blocker.js) |
 | ~~L4~~ | ~~IP detection flags RFC 1918 private ranges~~ | FIXED in prior commit (pii-blocker.js) |
-| L5 | PII detection US-only (no international formats) | pii-blocker.js |
-| L6 | MYSQL_HOST hardcoded to localhost | mcp/settings.php-mysql.example.json |
+| ~~L5~~ | ~~PII detection US-only (no international formats)~~ | FIXED: Added IBAN (36 country codes) + international phone patterns |
+| ~~L6~~ | ~~MYSQL_HOST hardcoded to localhost~~ | FIXED: Changed to `${MYSQL_HOST:-localhost}` env var |
 | ~~L7~~ | ~~Branch check execSync has no timeout~~ | FIXED in prior commit (branch-protection.js, timeout: 5000) |
-| L8 | Audit.yaml security patterns may false-positive | audit.yaml |
+| ~~L8~~ | ~~Audit.yaml security patterns may false-positive~~ | FIXED: Tightened to `$_(GET\|POST\|REQUEST)` superglobals only |
 
 ---
 
@@ -190,9 +190,10 @@ audit.yaml duplicates audit/SKILL.md patterns. handoff.yaml duplicates handoff/S
 | ~~6~~ | ~~Tighten allowlist anchors (M3)~~ | DONE |
 | ~~7~~ | ~~Add missing git patterns (H3)~~ | DONE |
 | ~~8~~ | ~~Base64 + concatenation detection (H2/M4)~~ | DONE |
-| 9 | Stack format normalization | Remaining (structural, lower urgency) |
+| ~~9~~ | ~~Low-priority fixes (L1-L8)~~ | DONE |
+| 10 | Stack format normalization | Remaining (structural, lower urgency) |
 
-**8 of 9 top-priority fixes completed.**
+**9 of 10 top-priority fixes completed. All code issues resolved.**
 
 ---
 

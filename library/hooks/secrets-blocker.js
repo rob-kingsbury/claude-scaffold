@@ -170,10 +170,10 @@ const SECRET_PATTERNS = [
         description: 'SendGrid API key'
     },
 
-    // Generic high-entropy
+    // Generic high-entropy (backreference \1 ensures balanced quotes)
     {
         name: 'Generic API Key',
-        pattern: /\b(?:api[_-]?key|apikey|api[_-]?secret|secret[_-]?key)\s*[:=]\s*['"]?([A-Za-z0-9_-]{20,})['"]?/gi,
+        pattern: /\b(?:api[_-]?key|apikey|api[_-]?secret|secret[_-]?key)\s*[:=]\s*(['"]?)([A-Za-z0-9_-]{20,})\1/gi,
         description: 'Generic API key assignment'
     },
 
@@ -211,7 +211,19 @@ const SECRET_PATTERNS = [
     {
         name: 'JWT Token',
         pattern: /\beyJ[A-Za-z0-9_-]{10,}\.eyJ[A-Za-z0-9_-]{10,}\.[A-Za-z0-9_-]{10,}\b/g,
-        description: 'JSON Web Token'
+        validator: (match) => {
+            try {
+                const payload = match.split('.')[1];
+                const decoded = Buffer.from(payload.replace(/-/g, '+').replace(/_/g, '/'), 'base64').toString('utf8');
+                const parsed = JSON.parse(decoded);
+                const testValues = ['test', 'example', 'demo', 'fake', 'sample', 'localhost'];
+                const sub = (parsed.sub || '').toLowerCase();
+                const iss = (parsed.iss || '').toLowerCase();
+                if (testValues.some(t => sub.includes(t) || iss.includes(t))) return false;
+            } catch { /* not decodable - still flag */ }
+            return true;
+        },
+        description: 'JSON Web Token (skips test/example payloads)'
     },
 
     // OAuth tokens
