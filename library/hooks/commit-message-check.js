@@ -41,7 +41,7 @@ function extractCommitMessage(command) {
     }
 
     // Match HEREDOC pattern: -m "$(cat <<'EOF' ... EOF)"
-    const heredocMatch = command.match(/-m\s+"\$\(cat <<['"]?EOF['"]?\s+([\s\S]*?)\s+EOF\s*\)"/);
+    const heredocMatch = command.match(/-m\s+"\$\(cat <<['"]?EOF['"]?\s*([\s\S]*?)\s*EOF\s*\)"/);
     if (heredocMatch) {
         // Get first line of HEREDOC content
         return heredocMatch[1].split('\n')[0].trim();

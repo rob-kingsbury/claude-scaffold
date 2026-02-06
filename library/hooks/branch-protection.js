@@ -67,8 +67,9 @@ async function main() {
     }
 
     // Block direct push to main without PR
-    if (/git\s+push\s+origin\s+(main|master)/.test(command)) {
-        console.error(`Blocked: Direct push to '${currentBranch}' not allowed.\n` +
+    const pushMatch = command.match(/git\s+push\s+origin\s+(main|master)/);
+    if (pushMatch) {
+        console.error(`Blocked: Direct push to '${pushMatch[1]}' not allowed.\n` +
                      `Create a PR instead: gh pr create`);
         process.exit(2);
     }

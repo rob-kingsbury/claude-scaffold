@@ -118,7 +118,7 @@ When this skill is invoked:
 
 ## Ultrathink Mode
 
-During the AMA dialog, use extended thinking to:
+During the AMA dialog, use adaptive thinking to:
 - Analyze answers for implicit requirements
 - Identify potential technical challenges
 - Consider edge cases the user may not have mentioned

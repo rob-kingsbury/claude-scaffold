@@ -1,42 +1,40 @@
 # Claude Scaffold - Session Handoff
 
-**Last Updated:** 2026-02-05
-**Last Commit:** 726aa91 - Add /agents, /research skills and IDEAS backlog
+**Last Updated:** 2026-02-06
+**Last Commit:** Full codebase audit and bug fixes
 
 ## What Was Done This Session
 
-1. **Created `/agents` skill** - Monitor background agents (status, wait, logs, history)
-2. **Created `/research` skill** - Parallel agent research with topic tracking
-3. **Created `agent-notify.js` hook** - Desktop notifications on agent completion
-4. **Created `IDEAS.md`** - Comprehensive backlog of skills, hooks, stacks, rules
-5. **Tested research skill** - Works but expensive (112k tokens for one query)
-6. **Simplified research skill** - Removed "Crob/three-brain" marketing fluff
+1. **Full codebase audit** - 3 parallel agents audited skills, rules, hooks, stacks, workflows, MCP configs, AMA, and docs
+2. **Fixed 6 hook bugs** - snake_case fields in shell hooks, ghost hook refs in settings, branch-protection error msg, lint-check stderr, HEREDOC regex, indentation
+3. **Fixed 3 MCP configs** - replaced non-existent servers (@anthropic/mcp-server-mysql, npm-mcp-server), marked unverified vercel server
+4. **Fixed 2 workflow bugs** - gitignore regex in audit.yaml, hardcoded branch in handoff.yaml
+5. **Updated SSN validator** - pii-blocker now accepts post-2011 9xx area numbers
+6. **Migrated to Opus 4.6** - updated "extended thinking" references to "adaptive thinking"
 
 ## Priority Queue
 
-### Immediate (High Value)
-1. `pii-blocker.js` hook - Block commits containing PII (emails, SSNs, names)
-2. `secrets-blocker.js` hook - Block commits containing secrets (API keys, passwords)
+### Next (from IDEAS.md)
+1. Stack normalization - convert template-reference stacks to inline format (consistency)
+2. STACK.md documentation - create docs for all 8 stacks (parallel to SKILL.md pattern)
+3. Stack template creation - missing template files for php-mysql, laravel, etc.
 
-### Next
-3. `changelog` skill - Auto-generate CHANGELOG.md from conventional commits
-4. `roadmap` skill - Project roadmap from GitHub issues/milestones
-5. `adr` skill - Architecture Decision Records
-6. `github-actions` skill - CI/CD workflow templates
+### Later
+4. `secrets` skill - secret detection, rotation reminders
+5. `migrations` skill - database migration generation
+6. `storybook` skill - component documentation
 
 ## Files to Know
 
 | File | Purpose |
 |------|---------|
 | `IDEAS.md` | Full backlog with priorities |
-| `library/skills/agents/SKILL.md` | Agent monitoring skill |
-| `library/skills/research/SKILL.md` | Research skill |
-| `library/hooks/agent-notify.js` | Desktop notification hook |
-| `.claude/curiosity-queue.json` | Topics queued for later research |
-| `.claude/knowledge/*.md` | Research findings |
+| `library/hooks/*.js` | All hooks (11 total, all verified working) |
+| `library/mcp/*.json` | MCP configs (3 stack-specific + global README) |
+| `library/workflows/*.yaml` | 4 trigger workflows |
 
 ## Continue With
 
 ```
-Work on claude-scaffold. Priority: pii-blocker and secrets-blocker hooks.
+Work on claude-scaffold. Priority: stack normalization and STACK.md docs.
 ```

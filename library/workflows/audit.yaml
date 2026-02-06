@@ -26,7 +26,7 @@ steps:
         severity: CRITICAL
 
       - name: ".env not gitignored"
-        command: "cat .gitignore | grep -E '^.env'"
+        command: "cat .gitignore | grep -F '.env'"
         expect: "match"
         severity: CRITICAL
 

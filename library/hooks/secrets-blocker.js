@@ -323,14 +323,14 @@ async function main() {
     // Skip certain files
     if (shouldSkipFile(filePath)) {
         // Empty JSON = allow operation
-process.stdout.write('{}');
+        process.stdout.write('{}');
         process.exit(0);
     }
 
     // Skip empty content
     if (!content || content.trim() === '') {
         // Empty JSON = allow operation
-process.stdout.write('{}');
+        process.stdout.write('{}');
         process.exit(0);
     }
 
@@ -356,8 +356,7 @@ process.stdout.write('{}');
     }
 
     // No secrets found, allow
-    // Empty JSON = allow operation
-process.stdout.write('{}');
+    process.stdout.write('{}');
     process.exit(0);
 }
 

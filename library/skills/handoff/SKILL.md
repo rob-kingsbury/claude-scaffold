@@ -93,7 +93,7 @@ Co-Authored-By: Claude <noreply@anthropic.com>"
 
 ### Step 7: Push
 ```bash
-git push origin main
+git push origin HEAD
 ```
 
 ### Step 8: Output Summary

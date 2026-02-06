@@ -71,9 +71,9 @@ const PII_PATTERNS = [
         pattern: /\b(?<!\d)\d{9}(?!\d)\b/g,
         // Exclude years, zip codes, and other 9-digit sequences that aren't SSNs
         validator: (match) => {
-            // SSNs don't start with 000, 666, or 9xx (before 2011 rules)
+            // SSNs don't start with 000 or 666 (9xx valid since 2011 randomization)
             const firstThree = match.substring(0, 3);
-            return firstThree !== '000' && firstThree !== '666' && !firstThree.startsWith('9');
+            return firstThree !== '000' && firstThree !== '666';
         },
         description: 'Format: XXXXXXXXX'
     },
@@ -192,14 +192,14 @@ async function main() {
     // Skip certain files
     if (shouldSkipFile(filePath)) {
         // Empty JSON = allow operation
-process.stdout.write('{}');
+        process.stdout.write('{}');
         process.exit(0);
     }
 
     // Skip empty content
     if (!content || content.trim() === '') {
         // Empty JSON = allow operation
-process.stdout.write('{}');
+        process.stdout.write('{}');
         process.exit(0);
     }
 
@@ -225,8 +225,7 @@ process.stdout.write('{}');
     }
 
     // No PII found, allow
-    // Empty JSON = allow operation
-process.stdout.write('{}');
+    process.stdout.write('{}');
     process.exit(0);
 }
 

@@ -62,7 +62,7 @@ steps:
 
   7_push:
     description: "Push to remote"
-    command: "git push origin main"
+    command: "git push origin HEAD"
     if_fails: "Warn user, suggest git pull --rebase"
 
   8_output_summary:

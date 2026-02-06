@@ -69,7 +69,7 @@ process.stdin.on('end', () => {
             // Lint failed - warn but don't block
             // Change to process.exit(1) to block edits on lint failure
             console.error(`Lint warning for ${filePath}:`);
-            console.error(lintError.stdout?.toString() || lintError.message);
+            console.error(lintError.stderr?.toString() || lintError.stdout?.toString() || lintError.message);
             process.exit(0); // Still allow, just warn
         }
 

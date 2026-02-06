@@ -38,7 +38,7 @@
       "env": {
         "VERCEL_TOKEN": "${VERCEL_TOKEN}"
       },
-      "description": "Vercel deployment management"
+      "description": "Vercel deployment management (community server - verify availability)"
     }
   }
 }

@@ -1,6 +1,6 @@
 # Deep Thinking Mode
 
-**How to invoke extended thinking when you need thorough analysis.**
+**How to invoke adaptive thinking when you need thorough analysis.**
 
 ## Trigger Phrases
 

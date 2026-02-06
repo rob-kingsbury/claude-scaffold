@@ -17,12 +17,6 @@
       }
     },
 
-    "npm": {
-      "command": "npx",
-      "args": ["-y", "npm-mcp-server"],
-      "description": "NPM package information and management"
-    },
-
     "brave-search": {
       "command": "npx",
       "args": ["-y", "@anthropic/mcp-server-brave-search"],

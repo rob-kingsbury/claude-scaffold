@@ -120,7 +120,7 @@ Location: `.claude/settings.local.json` (gitignored)
 
 Claude Code automatically enables Tool Search when MCP tool descriptions exceed 10% of context. This loads tools on-demand rather than preloading all of them, reducing context usage by up to 47%.
 
-**Requirements:** Sonnet 4+ or Opus 4+ (Haiku doesn't support Tool Search)
+**Requirements:** Sonnet 4+ or Opus 4+ (Haiku may not support Tool Search — verify for your model version)
 
 ## Resources
 

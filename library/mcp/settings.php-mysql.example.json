@@ -19,7 +19,7 @@
 
     "mysql": {
       "command": "npx",
-      "args": ["-y", "@anthropic/mcp-server-mysql"],
+      "args": ["-y", "@benborla29/mcp-server-mysql"],
       "env": {
         "MYSQL_HOST": "localhost",
         "MYSQL_USER": "${MYSQL_USER}",

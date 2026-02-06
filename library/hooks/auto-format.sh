@@ -18,7 +18,7 @@
 
 # Read event from stdin
 EVENT=$(cat)
-FILE=$(echo "$EVENT" | jq -r '.toolInput.file_path // .toolInput.filePath // empty')
+FILE=$(echo "$EVENT" | jq -r '.tool_input.file_path // .tool_input.filePath // empty')
 
 if [ -z "$FILE" ]; then
     exit 0
