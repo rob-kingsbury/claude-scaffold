@@ -82,38 +82,47 @@ function handleTaskComplete(hookData) {
   process.exit(0);
 }
 
+/**
+ * Sanitize a string for safe shell interpolation.
+ * Strips characters that could enable command injection.
+ */
+function sanitizeForShell(str) {
+  return str.replace(/[`$\\!";&|<>(){}[\]\n\r]/g, '').substring(0, 200);
+}
+
 function sendNotification(description, agentId) {
   const title = 'Agent Complete';
-  const message = `${description} (${agentId})`;
+  const safeDesc = sanitizeForShell(description);
+  const safeId = sanitizeForShell(agentId);
+  const message = `${safeDesc} (${safeId})`;
 
   try {
+    const { execFileSync } = require('child_process');
+
     if (process.platform === 'win32') {
-      // Windows - try PowerShell toast (BurntToast module)
-      // Falls back to msg.exe if BurntToast not available
+      // Windows - PowerShell toast via execFileSync (no shell interpolation)
       try {
-        execSync(
-          `powershell -Command "New-BurntToastNotification -Text '${title}', '${message.replace(/'/g, "''")}'"`,
-          { stdio: 'ignore', timeout: 5000 }
-        );
+        execFileSync('powershell', [
+          '-Command',
+          `New-BurntToastNotification -Text '${title}', '${message.replace(/'/g, "''")}'`
+        ], { stdio: 'ignore', timeout: 5000 });
       } catch {
-        // Fallback: use PowerShell basic notification
-        execSync(
-          `powershell -Command "[System.Reflection.Assembly]::LoadWithPartialName('System.Windows.Forms'); [System.Windows.Forms.MessageBox]::Show('${message.replace(/'/g, "''")}', '${title}', 'OK', 'Information')"`,
-          { stdio: 'ignore', timeout: 5000 }
-        );
+        // Fallback: basic PowerShell notification
+        execFileSync('powershell', [
+          '-Command',
+          `[System.Reflection.Assembly]::LoadWithPartialName('System.Windows.Forms'); ` +
+          `[System.Windows.Forms.MessageBox]::Show('${message.replace(/'/g, "''")}', '${title}', 'OK', 'Information')`
+        ], { stdio: 'ignore', timeout: 5000 });
       }
     } else if (process.platform === 'darwin') {
-      // macOS
-      execSync(
-        `osascript -e 'display notification "${message}" with title "${title}"'`,
-        { stdio: 'ignore', timeout: 5000 }
-      );
+      // macOS - use execFileSync to avoid shell interpretation
+      execFileSync('osascript', [
+        '-e',
+        `display notification "${message.replace(/"/g, '\\"')}" with title "${title}"`
+      ], { stdio: 'ignore', timeout: 5000 });
     } else {
-      // Linux - notify-send
-      execSync(
-        `notify-send "${title}" "${message}"`,
-        { stdio: 'ignore', timeout: 5000 }
-      );
+      // Linux - execFileSync with array args prevents injection
+      execFileSync('notify-send', [title, message], { stdio: 'ignore', timeout: 5000 });
     }
   } catch (e) {
     // Notification failed - non-critical, continue silently

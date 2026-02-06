@@ -3,7 +3,7 @@
 Living document cataloging all reusable functions, utilities, and patterns across claude-scaffold.
 
 **Last Updated:** 2026-02-06
-**Total Functions:** 52
+**Total Functions:** 63 (52 original + 8 hook-utils + 3 new)
 
 ---
 
@@ -20,13 +20,31 @@ Living document cataloging all reusable functions, utilities, and patterns acros
 
 ---
 
+## Shared Module: hook-utils.js
+
+Extracted shared utilities used by pii-blocker, secrets-blocker, and branch-protection hooks.
+
+| Function | Line | Parameters | Returns | Purpose |
+|----------|------|------------|---------|---------|
+| `readStdin` | 38 | `{failClosed}` | Promise\<Object\> | Async stdin reader; exits 2 on error if failClosed |
+| `parseHookEvent` | 67 | `event` | `{filePath, content}` | Extracts file_path and content from hook event |
+| `shouldSkipFile` | 79 | `filePath, extraPatterns[]` | boolean | Skip binary/vendor/lock files; accepts extra patterns |
+| `isAllowlisted` | 94 | `value, patterns[]` | boolean | Check value against configurable allowlist |
+| `deduplicateFindings` | 104 | `findings[]` | `findings[]` | Dedup by type:masked key |
+| `formatFindings` | 118 | `findings[], limit` | `{list, more}` | Format for stderr display |
+| `allowAndExit` | 131 | none | void | `process.stdout.write('{}'); process.exit(0)` |
+| `blockAndExit` | 138 | `message` | void | `console.error(msg); process.exit(2)` |
+
+---
+
 ## Hook Functions
 
 Entry-point routines in each hook that read JSON from stdin and orchestrate processing.
 
 | Function | File | Line | Returns | Purpose | Reusable? |
 |----------|------|------|---------|---------|-----------|
-| `main` | hooks/branch-protection.js | 23 | exit 0/2 | Blocks dangerous git ops on protected branches | No |
+| `extractPushTarget` | hooks/branch-protection.js | 44 | string/null | Parses git push args to extract target branch (handles flags, refspecs) | **Yes** |
+| `main` | hooks/branch-protection.js | 104 | exit 0/2 | Blocks dangerous git ops on protected branches | No |
 | `main` | hooks/pii-blocker.js | 179 | exit 0/2 | Scans content for PII, blocks if found | No |
 | `main` | hooks/secrets-blocker.js | 310 | exit 0/2 | Scans content for secrets, blocks if found | No |
 | `handleTaskComplete` | hooks/agent-notify.js | 42 | void | Parses agent completion, sends notification | No |
@@ -44,7 +62,8 @@ Entry-point routines in each hook that read JSON from stdin and orchestrate proc
 
 | Function | File | Line | Parameters | Returns | Purpose |
 |----------|------|------|------------|---------|---------|
-| `detectPII` | hooks/pii-blocker.js | 138 | `content` | `[{type, masked, description}]` | Scans against PII_PATTERNS (SSN, CC, phone, email, IP, DOB) |
+| `luhnCheck` | hooks/pii-blocker.js | 56 | `number` | boolean | Luhn checksum validation for credit card numbers |
+| `detectPII` | hooks/pii-blocker.js | 125 | `content` | `[{type, masked, description}]` | Scans against PII_PATTERNS (SSN, CC with Luhn, phone, email, IP, DOB) |
 | `detectSecrets` | hooks/secrets-blocker.js | 262 | `content, filePath` | `[{type, masked, description}]` | Scans against SECRET_PATTERNS (20 pattern types) |
 | `SECURITY_PATTERNS` scan | hooks/security-scan.js | 25-98, 140 | content via loop | `[{name, severity, message, count}]` | 12 anti-patterns (SQL injection, eval, innerHTML, etc.) |
 | `runTypeCheck` | hooks/type-check.js | 70 | `tscPath, projectRoot` | `{success, errors}` | Executes `tsc --noEmit` |
@@ -73,7 +92,8 @@ Entry-point routines in each hook that read JSON from stdin and orchestrate proc
 
 | Function | File | Line | Parameters | Returns | Purpose |
 |----------|------|------|------------|---------|---------|
-| `sendNotification` | hooks/agent-notify.js | 85 | `description, agentId` | void | Cross-platform desktop notification (Win/Mac/Linux) |
+| `sanitizeForShell` | hooks/agent-notify.js | 89 | `str` | string | Strips shell metacharacters for safe interpolation |
+| `sendNotification` | hooks/agent-notify.js | 96 | `description, agentId` | void | Cross-platform desktop notification via execFileSync (Win/Mac/Linux) |
 | `persistHistory` | hooks/agent-notify.js | 123 | `entry` (object) | void | Writes to .claude/agent-history.json (100-entry cap) |
 
 ---
@@ -140,9 +160,9 @@ Entry-point routines in each hook that read JSON from stdin and orchestrate proc
 
 ---
 
-## Duplication Map (Extraction Candidates)
+## Duplication Map (Resolved)
 
-Functions that exist in near-identical form across multiple files:
+Previously duplicated functions now consolidated in `hook-utils.js`:
 
 | Function | Appears In | Lines Each | Extraction Target |
 |----------|-----------|------------|-------------------|

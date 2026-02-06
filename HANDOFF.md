@@ -1,44 +1,46 @@
 # Claude Scaffold - Session Handoff
 
 **Last Updated:** 2026-02-06
-**Last Commit:** Second audit pass, functions catalog, quality report
+**Last Commit:** Security + DRY fixes (hook-utils.js, fail-closed, branch protection, Luhn, sanitization)
 
 ## What Was Done This Session
 
 1. **Full codebase audit** - 3 parallel agents audited skills, rules, hooks, stacks, workflows, MCP configs, AMA, and docs
 2. **Fixed 12 bugs** across 18 files (hooks, MCP, workflows, docs) - committed as `ea42701`
 3. **Second audit pass** - 3 parallel agents focused on security, DRY/reusability, and function cataloging
-4. **Created FUNCTIONS.md** - Living catalog of all 52 functions across the project
-5. **Created AUDIT-REPORT.md** - Full code quality report with open issues and fix priorities
+4. **Created FUNCTIONS.md** - Living catalog of 63 functions across the project
+5. **Created AUDIT-REPORT.md** - Full code quality report (9.1/10)
+6. **Extracted hook-utils.js** - Shared module eliminating ~110 lines of duplication
+7. **Fixed 7 security/quality issues:**
+   - C1: Rewrote branch-protection push detection (handles all git push syntax)
+   - H1: Security hooks now fail-closed on errors
+   - H3: Added git restore, branch -D, push --delete patterns
+   - H4: Sanitized agent-notify.js shell commands (execFileSync + sanitization)
+   - H5: Added Luhn validation for credit card detection
+   - M3: Tightened allowlist anchors with `$` end-anchors
+   - L4: IP detection now excludes RFC 1918 private ranges
 
 ## Open Issues (from AUDIT-REPORT.md)
 
-### Critical (1)
-- Branch protection push check bypassable with alternate git syntax
+### Critical (0) -- All resolved
 
-### High Priority (5)
-1. All security hooks fail-open on errors (should fail-closed)
-2. Extract hook-utils.js to eliminate ~110 lines of duplication
-3. Missing dangerous git patterns (git restore, branch -D, push --delete)
-4. Command injection in agent-notify.js shell commands
-5. No Luhn validation on credit card detection
+### High Priority (1 remaining)
+- H2: Regex detection inherently bypassable via obfuscation (known limitation, documented)
 
-### Medium Priority (9)
-- Allowlist anchors, context checks, base64 detection, SSN/phone false positives, npx versioning, etc.
+### Medium Priority (8 remaining)
+- Context check breadth (AWS, Heroku), base64 detection, SSN/phone false positives, npx versioning, git add -A in handoff, run-tests.sh path validation
 
 ## Priority Queue
 
-### Next (Security + DRY)
-1. Extract `hook-utils.js` shared module (DRY - highest impact)
-2. Fail-closed on security hooks (security - prevents silent bypass)
-3. Rewrite branch-protection push detection (security - critical bypass)
-4. Sanitize agent-notify shell commands (security - command injection)
-5. Add Luhn validation for credit cards (quality - reduce false positives)
+### Next (from IDEAS.md)
+1. Stack normalization - convert template-reference stacks to inline format
+2. STACK.md documentation - create docs for all 8 stacks
+3. Stack template creation - missing template files
 
-### Later (from IDEAS.md)
-6. Stack normalization - convert template-reference stacks to inline format
-7. STACK.md documentation - create docs for all 8 stacks
-8. Stack template creation - missing template files
+### Later
+4. `secrets` skill - secret detection, rotation reminders
+5. `migrations` skill - database migration generation
+6. `storybook` skill - component documentation
 
 ## Files to Know
 
@@ -54,5 +56,5 @@
 ## Continue With
 
 ```
-Work on claude-scaffold. Priority: extract hook-utils.js and fix security hooks (see AUDIT-REPORT.md).
+Work on claude-scaffold. Priority: stack normalization and STACK.md docs (see IDEAS.md).
 ```

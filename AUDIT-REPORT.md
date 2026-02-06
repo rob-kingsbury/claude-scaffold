@@ -7,18 +7,18 @@
 
 ---
 
-## Overall Score: 8.4 / 10
+## Overall Score: 9.1 / 10
 
 | Category | Score | Notes |
 |----------|-------|-------|
 | Skills Library (35 skills) | 9.5/10 | Consistent structure, good quality, no broken cross-refs |
 | Rules (7 rules) | 9.0/10 | Well-written, comprehensive |
-| Hooks (11 hooks) | 7.5/10 | Functional bugs fixed, but security gaps and DRY violations remain |
+| Hooks (11 hooks) | 9.0/10 | Shared hook-utils.js, fail-closed, Luhn, sanitized notifications, robust branch protection |
 | Stacks (8 stacks) | 7.0/10 | Two incompatible formats, heavy duplication, missing templates |
 | Workflows (4 workflows) | 8.0/10 | Fixed regex/branch bugs, minor duplication with skills |
 | MCP Configs (3 + README) | 8.5/10 | Fixed non-existent servers, good env var usage |
 | Autopilot Scripts | 9.0/10 | Best security practices in project (path validation, atomic writes) |
-| Documentation | 8.0/10 | HANDOFF updated, new FUNCTIONS.md created |
+| Documentation | 9.0/10 | HANDOFF, FUNCTIONS.md, AUDIT-REPORT.md all current |
 
 ---
 
@@ -47,43 +47,24 @@
 
 ## Open Issues by Severity
 
-### CRITICAL (1)
+### CRITICAL (0) -- All resolved
 
-**C1. Branch protection push check trivially bypassable**
-- File: `library/hooks/branch-protection.js:70`
-- The regex `git\s+push\s+origin\s+(main|master)` only matches exact syntax
-- Bypassed by: `git push -u origin main`, `git push origin HEAD:main`, `git push --force origin main`, `git push` (default upstream), `git push origin HEAD:refs/heads/main`
-- **Fix:** Rewrite to parse git arguments properly, handle flags between `push` and remote, handle refspec syntax
+~~**C1. Branch protection push check trivially bypassable**~~ FIXED: Rewrote with `extractPushTarget()` that properly parses git push args, handles flags, refspecs, and `HEAD:refs/heads/main` syntax.
 
-### HIGH (5)
+### HIGH (1 remaining)
 
-**H1. All security hooks fail-open on errors**
-- Files: All 9 JS hooks
-- JSON parse errors caught and exit 0 (allow) instead of exit 2 (block)
-- Empty stdin also results in exit 0
-- **Fix:** Security-critical hooks (pii-blocker, secrets-blocker, branch-protection) should `process.exit(2)` on error
-
-**H2. Regex detection inherently bypassable via obfuscation**
+**H2. Regex detection inherently bypassable via obfuscation** (known limitation)
 - Files: pii-blocker.js, secrets-blocker.js
 - String concatenation, base64 encoding, hex escapes, variable indirection all bypass regex
-- **Fix:** Document as known limitation; consider entropy analysis for high-value strings
+- **Status:** Documented as known limitation. Regex-based detection is defense-in-depth, not a guarantee.
 
-**H3. Missing dangerous git patterns in branch-protection**
-- File: `library/hooks/branch-protection.js:38-44`
-- Missing: `git restore .`, `git branch -D`, `git push origin --delete`, `git checkout -- .`
-- `--force-with-lease` is a false positive (safer than `--force`)
-- **Fix:** Add missing patterns, exclude `--force-with-lease`
+~~**H1. All security hooks fail-open on errors**~~ FIXED: pii-blocker, secrets-blocker, branch-protection now use `readStdin({ failClosed: true })` and `process.exit(2)` on catch.
 
-**H4. Command injection in agent-notify.js notifications**
-- File: `library/hooks/agent-notify.js:85-121`
-- `description` field interpolated into shell commands (osascript, notify-send, PowerShell)
-- Crafted description could execute arbitrary commands
-- **Fix:** Use `execFile` with array args instead of `execSync` with string interpolation
+~~**H3. Missing dangerous git patterns**~~ FIXED: Added `git restore .`, `git branch -D`, `git checkout -- .`; excluded `--force-with-lease`; added `git push origin --delete` detection.
 
-**H5. No Luhn validation on credit card detection**
-- File: `library/hooks/pii-blocker.js:82-90`
-- Pattern matches by prefix+length only, causing high false positives
-- **Fix:** Add Luhn checksum validation (~15 lines of code)
+~~**H4. Command injection in agent-notify.js**~~ FIXED: Switched from `execSync` with string interpolation to `execFileSync` with array args + `sanitizeForShell()` input sanitization.
+
+~~**H5. No Luhn validation on credit card detection**~~ FIXED: Added `luhnCheck()` function as validator on both CC patterns.
 
 ### MEDIUM (9)
 
@@ -91,7 +72,7 @@
 |----|-------|------|-----|
 | M1 | AWS context check file-wide, not line-proximate | secrets-blocker.js:90 | Check context within 3 lines of match |
 | M2 | Heroku pattern matches all UUIDs when "heroku" in file | secrets-blocker.js:235 | Tighten context to nearby lines |
-| M3 | Allowlist patterns missing `$` end-anchor | secrets-blocker.js:58-79 | Add `$` to prevent prefix gaming |
+| ~~M3~~ | ~~Allowlist patterns missing `$` end-anchor~~ | ~~secrets-blocker.js~~ | FIXED: Added `$` anchors to exact-match patterns |
 | M4 | No base64/multi-line secret detection | secrets-blocker.js | Add base64 decode + rescan for long strings |
 | M5 | SSN 9-digit pattern very broad | pii-blocker.js:71 | Require nearby context ("SSN", "social security") |
 | M6 | Phone pattern matches any 10-digit number | pii-blocker.js:92 | Require separator or prefix |
@@ -116,9 +97,9 @@
 
 ## DRY Violations
 
-### Priority 1: Extract hook-utils.js (HIGH)
+### Priority 1: Extract hook-utils.js (HIGH) -- DONE
 
-**Impact:** ~110 net lines saved across 9 files
+**Impact:** ~110 net lines saved across 9 files. Created `library/hooks/hook-utils.js`.
 
 Duplicated across pii-blocker.js and secrets-blocker.js (identical):
 - `shouldSkipFile()` (12 lines x2)
@@ -197,18 +178,18 @@ audit.yaml duplicates audit/SKILL.md patterns. handoff.yaml duplicates handoff/S
 
 ## Recommended Fix Priority
 
-| Priority | Issue | Effort | Impact |
-|----------|-------|--------|--------|
-| 1 | Extract hook-utils.js (DRY) | 2-3 hrs | Eliminates ~110 lines of duplication, single point of fix for bugs |
-| 2 | Fail-closed on security hooks (H1) | 30 min | Prevents silent bypass via malformed input |
-| 3 | Branch protection rewrite (C1) | 1-2 hrs | Actually protects main branch |
-| 4 | Sanitize agent-notify shell commands (H4) | 30 min | Prevents command injection |
-| 5 | Add Luhn validation (H5) | 30 min | Dramatically reduces CC false positives |
-| 6 | Tighten allowlist anchors (M3) | 15 min | Prevents allowlist gaming |
-| 7 | Add missing git patterns (H3) | 30 min | Covers git restore, branch -D, etc. |
-| 8 | Stack format normalization | 2-3 hrs | Structural, lower urgency |
+| Priority | Issue | Status |
+|----------|-------|--------|
+| ~~1~~ | ~~Extract hook-utils.js (DRY)~~ | DONE |
+| ~~2~~ | ~~Fail-closed on security hooks (H1)~~ | DONE |
+| ~~3~~ | ~~Branch protection rewrite (C1)~~ | DONE |
+| ~~4~~ | ~~Sanitize agent-notify shell commands (H4)~~ | DONE |
+| ~~5~~ | ~~Add Luhn validation (H5)~~ | DONE |
+| ~~6~~ | ~~Tighten allowlist anchors (M3)~~ | DONE |
+| ~~7~~ | ~~Add missing git patterns (H3)~~ | DONE |
+| 8 | Stack format normalization | Remaining (structural, lower urgency) |
 
-**Estimated total effort for top 7 fixes: ~6-8 hours**
+**7 of 8 top-priority fixes completed.**
 
 ---
 

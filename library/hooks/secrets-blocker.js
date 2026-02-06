@@ -29,26 +29,19 @@
  * }
  */
 
-const readline = require('readline');
+const {
+    readStdin,
+    parseHookEvent,
+    shouldSkipFile,
+    isAllowlisted,
+    deduplicateFindings,
+    formatFindings,
+    allowAndExit,
+    blockAndExit
+} = require('./hook-utils');
 
-// File extensions to skip
-const SKIP_EXTENSIONS = [
-    '.png', '.jpg', '.jpeg', '.gif', '.ico', '.svg', '.webp',
-    '.mp3', '.mp4', '.wav', '.avi', '.mov',
-    '.pdf', '.zip', '.tar', '.gz',
-    '.woff', '.woff2', '.ttf', '.eot',
-    '.lock', '.sum'
-];
-
-// Files/paths to skip
-const SKIP_PATTERNS = [
-    /node_modules\//i,
-    /vendor\//i,
-    /\.git\//i,
-    /package-lock\.json$/i,
-    /composer\.lock$/i,
-    /yarn\.lock$/i,
-    /\.min\.(js|css)$/i,
+// Extra skip patterns for secrets (beyond base set)
+const EXTRA_SKIP_PATTERNS = [
     /\.example$/i,
     /\.sample$/i,
     /\.template$/i
@@ -56,20 +49,20 @@ const SKIP_PATTERNS = [
 
 // Allowlisted patterns (placeholder/example values)
 const ALLOWLIST_PATTERNS = [
-    /^your[_-]?(api)?[_-]?key/i,
+    /^your[_-]?(api)?[_-]?key$/i,
     /^xxx+$/i,
-    /^placeholder/i,
+    /^placeholder$/i,
     /^changeme$/i,
     /^secret$/i,
     /^password$/i,
     /^sk[_-]test[_-]/i,    // Stripe test keys
     /^pk[_-]test[_-]/i,    // Stripe test keys
-    /^example/i,
-    /^test[_-]?key/i,
-    /^dummy/i,
-    /^fake/i,
-    /^sample/i,
-    /^demo/i,
+    /^example$/i,
+    /^test[_-]?key$/i,
+    /^dummy$/i,
+    /^fake$/i,
+    /^sample$/i,
+    /^demo$/i,
     /<[^>]+>/,             // Template placeholders like <YOUR_KEY>
     /\$\{[^}]+\}/,         // Variable interpolation ${VAR}
     /\{\{[^}]+\}\}/,       // Mustache/Handlebars {{ var }}
@@ -160,7 +153,7 @@ const SECRET_PATTERNS = [
     // Generic high-entropy
     {
         name: 'Generic API Key',
-        pattern: /\b(?:api[_-]?key|apikey|api[_-]?secret|secret[_-]?key)\s*[:=]\s*['"]([A-Za-z0-9_-]{20,})['"]?/gi,
+        pattern: /\b(?:api[_-]?key|apikey|api[_-]?secret|secret[_-]?key)\s*[:=]\s*['"]?([A-Za-z0-9_-]{20,})['"]?/gi,
         description: 'Generic API key assignment'
     },
 
@@ -188,7 +181,6 @@ const SECRET_PATTERNS = [
         name: 'Password Assignment',
         pattern: /\b(?:password|passwd|pwd)\s*[:=]\s*['"]([^'"]{8,})['"]/gi,
         validator: (match) => {
-            // Skip obvious placeholders
             const lower = match.toLowerCase();
             return !['password', 'changeme', 'secret', 'test', 'example', 'placeholder'].some(p => lower.includes(p));
         },
@@ -239,26 +231,6 @@ const SECRET_PATTERNS = [
     }
 ];
 
-function shouldSkipFile(filePath) {
-    if (!filePath) return true;
-
-    const ext = filePath.substring(filePath.lastIndexOf('.')).toLowerCase();
-    if (SKIP_EXTENSIONS.includes(ext)) return true;
-
-    for (const pattern of SKIP_PATTERNS) {
-        if (pattern.test(filePath)) return true;
-    }
-
-    return false;
-}
-
-function isAllowlisted(match) {
-    for (const pattern of ALLOWLIST_PATTERNS) {
-        if (pattern.test(match)) return true;
-    }
-    return false;
-}
-
 function detectSecrets(content, filePath) {
     const findings = [];
 
@@ -274,8 +246,7 @@ function detectSecrets(content, filePath) {
                 // Extract the actual secret (may be in a capture group)
                 const actual = match.replace(/^.*[:=]\s*['"]?/, '').replace(/['"]?\s*$/, '');
 
-                if (isAllowlisted(actual) || isAllowlisted(match)) continue;
-
+                if (isAllowlisted(actual, ALLOWLIST_PATTERNS) || isAllowlisted(match, ALLOWLIST_PATTERNS)) continue;
                 if (secret.validator && !secret.validator(actual)) continue;
 
                 // Mask for display
@@ -293,74 +264,35 @@ function detectSecrets(content, filePath) {
         }
     }
 
-    // Deduplicate
-    const unique = [];
-    const seen = new Set();
-    for (const finding of findings) {
-        const key = `${finding.type}:${finding.masked}`;
-        if (!seen.has(key)) {
-            seen.add(key);
-            unique.push(finding);
-        }
-    }
-
-    return unique;
+    return deduplicateFindings(findings);
 }
 
 async function main() {
-    const rl = readline.createInterface({ input: process.stdin });
-    let input = '';
+    const event = await readStdin({ failClosed: true });
+    const { filePath, content } = parseHookEvent(event);
 
-    for await (const line of rl) {
-        input += line;
-    }
+    if (shouldSkipFile(filePath, EXTRA_SKIP_PATTERNS)) allowAndExit();
+    if (!content || content.trim() === '') allowAndExit();
 
-    const event = JSON.parse(input);
-    // Claude Code uses snake_case for hook event properties
-    const filePath = event.tool_input?.file_path || '';
-    const content = event.tool_input?.content || event.tool_input?.new_string || '';
-
-    // Skip certain files
-    if (shouldSkipFile(filePath)) {
-        // Empty JSON = allow operation
-        process.stdout.write('{}');
-        process.exit(0);
-    }
-
-    // Skip empty content
-    if (!content || content.trim() === '') {
-        // Empty JSON = allow operation
-        process.stdout.write('{}');
-        process.exit(0);
-    }
-
-    // Detect secrets
     const findings = detectSecrets(content, filePath);
 
     if (findings.length > 0) {
-        const findingsList = findings
-            .slice(0, 5)
-            .map(f => `  - ${f.type}: ${f.masked}`)
-            .join('\n');
+        const { list, more } = formatFindings(findings);
 
-        const more = findings.length > 5 ? `\n  ...and ${findings.length - 5} more` : '';
-
-        // Exit 2 blocks the operation; stderr message is shown to Claude
-        console.error(`Blocked: Potential secrets detected in ${filePath}\n\nFindings:\n${findingsList}${more}\n\n` +
-                     `Best practices:\n` +
-                     `- Use environment variables: process.env.API_KEY\n` +
-                     `- Use .env files (add to .gitignore)\n` +
-                     `- Use secret managers (AWS Secrets Manager, Vault)\n` +
-                     `- For test keys, use sk_test_ or pk_test_ prefixes`);
-        process.exit(2);
+        blockAndExit(
+            `Blocked: Potential secrets detected in ${filePath}\n\nFindings:\n${list}${more}\n\n` +
+            `Best practices:\n` +
+            `- Use environment variables: process.env.API_KEY\n` +
+            `- Use .env files (add to .gitignore)\n` +
+            `- Use secret managers (AWS Secrets Manager, Vault)\n` +
+            `- For test keys, use sk_test_ or pk_test_ prefixes`
+        );
     }
 
-    // No secrets found, allow
-    process.stdout.write('{}');
-    process.exit(0);
+    allowAndExit();
 }
 
 main().catch(err => {
-    console.error(err);
-    process.exit(1);
+    console.error(`secrets-blocker error: ${err.message}`);
+    process.exit(2);
 });
