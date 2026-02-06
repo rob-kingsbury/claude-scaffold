@@ -1,34 +1,32 @@
 # Claude Scaffold - Session Handoff
 
 **Last Updated:** 2026-02-06
-**Last Commit:** Medium-priority fixes (line-proximate context, SSN/phone false positives, path validation, handoff safety)
+**Last Commit:** H2/M4 fixes (base64 decode + rescan, string concatenation detection)
 
 ## What Was Done This Session
 
 1. **Full codebase audit** - 3 parallel agents audited skills, rules, hooks, stacks, workflows, MCP configs, AMA, and docs
 2. **Fixed 12 bugs** across 18 files (hooks, MCP, workflows, docs) - committed as `ea42701`
 3. **Second audit pass** - 3 parallel agents focused on security, DRY/reusability, and function cataloging
-4. **Created FUNCTIONS.md** - Living catalog of 63 functions across the project
-5. **Created AUDIT-REPORT.md** - Full code quality report (9.1/10)
+4. **Created FUNCTIONS.md** - Living catalog of 64 functions across the project
+5. **Created AUDIT-REPORT.md** - Full code quality report (9.5/10)
 6. **Extracted hook-utils.js** - Shared module eliminating ~110 lines of duplication
-7. **Fixed 7 security/quality issues:**
-   - C1: Rewrote branch-protection push detection (handles all git push syntax)
-   - H1: Security hooks now fail-closed on errors
-   - H3: Added git restore, branch -D, push --delete patterns
-   - H4: Sanitized agent-notify.js shell commands (execFileSync + sanitization)
-   - H5: Added Luhn validation for credit card detection
-   - M3: Tightened allowlist anchors with `$` end-anchors
-   - L4: IP detection now excludes RFC 1918 private ranges
+7. **Fixed 7 high-priority security/quality issues** (C1, H1, H3, H4, H5, M3, L4)
+8. **Fixed 7 medium-priority issues** (M1, M2, M5, M6, M7, M8, M9)
+9. **Mitigated H2 + fixed M4** - Base64 decode+rescan and string concatenation detection
 
 ## Open Issues (from AUDIT-REPORT.md)
 
 ### Critical (0) -- All resolved
+### High (0) -- All resolved (H2 mitigated)
+### Medium (0) -- All resolved
 
-### High Priority (1 remaining)
-- H2: Regex detection inherently bypassable via obfuscation (known limitation, documented)
-
-### Medium Priority (1 remaining)
-- M4: No base64/multi-line secret detection (secrets-blocker.js)
+### Low (5 remaining)
+- L1: JWT detection flags test JWTs in test files
+- L2: Generic API key regex inconsistent quote handling
+- L5: PII detection US-only (no international formats)
+- L6: MYSQL_HOST hardcoded to localhost in example
+- L8: Audit.yaml security patterns may false-positive
 
 ## Priority Queue
 

@@ -7,7 +7,7 @@
 
 ---
 
-## Overall Score: 9.4 / 10
+## Overall Score: 9.5 / 10
 
 | Category | Score | Notes |
 |----------|-------|-------|
@@ -51,12 +51,14 @@
 
 ~~**C1. Branch protection push check trivially bypassable**~~ FIXED: Rewrote with `extractPushTarget()` that properly parses git push args, handles flags, refspecs, and `HEAD:refs/heads/main` syntax.
 
-### HIGH (1 remaining)
+### HIGH (0 remaining)
 
-**H2. Regex detection inherently bypassable via obfuscation** (known limitation)
-- Files: pii-blocker.js, secrets-blocker.js
-- String concatenation, base64 encoding, hex escapes, variable indirection all bypass regex
-- **Status:** Documented as known limitation. Regex-based detection is defense-in-depth, not a guarantee.
+~~**H2. Regex detection inherently bypassable via obfuscation**~~ MITIGATED:
+- Base64-encoded secrets: FIXED — `Base64-Encoded Secret` pattern decodes and rescans against 13 high-confidence prefixes
+- String concatenation: FIXED — `Concatenated Secret Prefix` pattern detects `"sk_" + ...`, `"ghp_" + ...`, etc.
+- Hex/unicode escapes: Known limitation (requires AST-level analysis)
+- Variable indirection: Known limitation (requires runtime/taint analysis)
+- **Status:** Mitigated to the extent possible with static regex. Remaining techniques require fundamentally different tooling.
 
 ~~**H1. All security hooks fail-open on errors**~~ FIXED: pii-blocker, secrets-blocker, branch-protection now use `readStdin({ failClosed: true })` and `process.exit(2)` on catch.
 
@@ -66,32 +68,32 @@
 
 ~~**H5. No Luhn validation on credit card detection**~~ FIXED: Added `luhnCheck()` function as validator on both CC patterns.
 
-### MEDIUM (1 remaining)
+### MEDIUM (0) -- All resolved
 
 | ID | Issue | File | Fix |
 |----|-------|------|-----|
 | ~~M1~~ | ~~AWS context check file-wide, not line-proximate~~ | ~~secrets-blocker.js~~ | FIXED: `matchAll` + `hasNearbyContext()` checks within 3 lines |
 | ~~M2~~ | ~~Heroku pattern matches all UUIDs when "heroku" in file~~ | ~~secrets-blocker.js~~ | FIXED: Same line-proximate context check |
 | ~~M3~~ | ~~Allowlist patterns missing `$` end-anchor~~ | ~~secrets-blocker.js~~ | FIXED: Added `$` anchors to exact-match patterns |
-| M4 | No base64/multi-line secret detection | secrets-blocker.js | Add base64 decode + rescan for long strings |
+| ~~M4~~ | ~~No base64/multi-line secret detection~~ | ~~secrets-blocker.js~~ | FIXED: Base64 decode + rescan against 13 high-confidence patterns |
 | ~~M5~~ | ~~SSN 9-digit pattern very broad~~ | ~~pii-blocker.js~~ | FIXED: Added `context: /\bssn\b\|social.?security\|tax.?id/i` |
 | ~~M6~~ | ~~Phone pattern matches any 10-digit number~~ | ~~pii-blocker.js~~ | FIXED: Validator requires separator or `+1` prefix |
 | ~~M7~~ | ~~npx -y auto-installs without version pinning~~ | ~~MCP configs~~ | FIXED: Documented risk + mitigation in MCP README |
 | ~~M8~~ | ~~git add -A in handoff workflow~~ | ~~handoff.yaml~~ | FIXED: Added staged file review step before commit |
 | ~~M9~~ | ~~run-tests.sh no project root validation~~ | ~~run-tests.sh~~ | FIXED: Path traversal + project root validation in both shell hooks |
 
-### LOW (8)
+### LOW (5 remaining)
 
 | ID | Issue | File |
 |----|-------|------|
-| L1 | JWT detection flags test JWTs in test files | secrets-blocker.js:199 |
-| L2 | Generic API key regex inconsistent quote handling | secrets-blocker.js:161 |
-| L3 | Email pattern missing @invalid. exclusion | pii-blocker.js:97 |
-| L4 | IP detection flags RFC 1918 private ranges | pii-blocker.js:103 |
+| L1 | JWT detection flags test JWTs in test files | secrets-blocker.js |
+| L2 | Generic API key regex inconsistent quote handling | secrets-blocker.js |
+| ~~L3~~ | ~~Email pattern missing @invalid. exclusion~~ | FIXED in prior commit (pii-blocker.js) |
+| ~~L4~~ | ~~IP detection flags RFC 1918 private ranges~~ | FIXED in prior commit (pii-blocker.js) |
 | L5 | PII detection US-only (no international formats) | pii-blocker.js |
-| L6 | MYSQL_HOST hardcoded to localhost | mcp/settings.php-mysql.example.json:24 |
-| L7 | Branch check execSync has no timeout | branch-protection.js:49 |
-| L8 | Audit.yaml security patterns may false-positive | audit.yaml:33-40 |
+| L6 | MYSQL_HOST hardcoded to localhost | mcp/settings.php-mysql.example.json |
+| ~~L7~~ | ~~Branch check execSync has no timeout~~ | FIXED in prior commit (branch-protection.js, timeout: 5000) |
+| L8 | Audit.yaml security patterns may false-positive | audit.yaml |
 
 ---
 
@@ -187,9 +189,10 @@ audit.yaml duplicates audit/SKILL.md patterns. handoff.yaml duplicates handoff/S
 | ~~5~~ | ~~Add Luhn validation (H5)~~ | DONE |
 | ~~6~~ | ~~Tighten allowlist anchors (M3)~~ | DONE |
 | ~~7~~ | ~~Add missing git patterns (H3)~~ | DONE |
-| 8 | Stack format normalization | Remaining (structural, lower urgency) |
+| ~~8~~ | ~~Base64 + concatenation detection (H2/M4)~~ | DONE |
+| 9 | Stack format normalization | Remaining (structural, lower urgency) |
 
-**7 of 8 top-priority fixes completed.**
+**8 of 9 top-priority fixes completed.**
 
 ---
 

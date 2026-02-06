@@ -16,6 +16,8 @@
  * - Password assignments in code
  * - JWT tokens
  * - OAuth tokens and refresh tokens
+ * - Base64-encoded secrets (decoded and rescanned)
+ * - String concatenation of known secret prefixes
  *
  * Usage in .claude/settings.json:
  * {
@@ -70,6 +72,23 @@ const ALLOWLIST_PATTERNS = [
     /process\.env\./i,     // Environment variable references
     /getenv\(/i,           // PHP getenv()
     /os\.environ/i,        // Python os.environ
+];
+
+// High-confidence patterns used to rescan decoded base64 content
+const BASE64_RESCAN_PATTERNS = [
+    /AKIA[0-9A-Z]{16}/,                     // AWS Access Key
+    /ghp_[A-Za-z0-9]{36}/,                  // GitHub PAT
+    /gho_[A-Za-z0-9]{36}/,                  // GitHub OAuth
+    /ghu_[A-Za-z0-9]{36}/,                  // GitHub App
+    /ghs_[A-Za-z0-9]{36}/,                  // GitHub App Install
+    /glpat-[A-Za-z0-9_-]{20,}/,             // GitLab PAT
+    /sk_live_[A-Za-z0-9]{24,}/,             // Stripe Secret
+    /pk_live_[A-Za-z0-9]{24,}/,             // Stripe Publishable
+    /xox[baprs]-[0-9A-Za-z-]{10,}/,         // Slack
+    /SG\.[A-Za-z0-9_-]{22}\./,              // SendGrid
+    /-----BEGIN.*PRIVATE KEY-----/,           // Private keys
+    /npm_[A-Za-z0-9]{36}/,                   // npm
+    /AIza[0-9A-Za-z_-]{35}/,                // Google API
 ];
 
 // Secret detection patterns
@@ -229,6 +248,30 @@ const SECRET_PATTERNS = [
         pattern: /\b[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}\b/gi,
         context: /heroku/i,
         description: 'Heroku API key (UUID format)'
+    },
+
+    // Base64-encoded secrets (H2/M4: anti-obfuscation)
+    {
+        name: 'Base64-Encoded Secret',
+        pattern: /\b[A-Za-z0-9+/]{40,}={0,2}\b/g,
+        validator: (match) => {
+            try {
+                const decoded = Buffer.from(match, 'base64').toString('utf8');
+                // Only flag if decoded content is printable ASCII
+                if (!/^[\x20-\x7E\n\r\t]+$/.test(decoded)) return false;
+                return BASE64_RESCAN_PATTERNS.some(p => p.test(decoded));
+            } catch {
+                return false;
+            }
+        },
+        description: 'Base64-encoded secret (decoded and rescanned)'
+    },
+
+    // String concatenation of known secret prefixes (H2: anti-obfuscation)
+    {
+        name: 'Concatenated Secret Prefix',
+        pattern: /['"](?:sk_|pk_|ghp_|gho_|ghu_|ghs_|glpat-|xox[baprs]-|npm_|AKIA|AIza)['"]\s*\+/g,
+        description: 'Secret prefix in string concatenation (possible obfuscation)'
     }
 ];
 

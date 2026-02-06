@@ -65,7 +65,7 @@ Entry-point routines in each hook that read JSON from stdin and orchestrate proc
 |----------|------|------|------------|---------|---------|
 | `luhnCheck` | hooks/pii-blocker.js | 56 | `number` | boolean | Luhn checksum validation for credit card numbers |
 | `detectPII` | hooks/pii-blocker.js | 125 | `content` | `[{type, masked, description}]` | Scans against PII_PATTERNS (SSN, CC with Luhn, phone, email, IP, DOB) |
-| `detectSecrets` | hooks/secrets-blocker.js | 262 | `content, filePath` | `[{type, masked, description}]` | Scans against SECRET_PATTERNS (20 pattern types) |
+| `detectSecrets` | hooks/secrets-blocker.js | 262 | `content, filePath` | `[{type, masked, description}]` | Scans against SECRET_PATTERNS (22 pattern types incl. base64 + concatenation) |
 | `SECURITY_PATTERNS` scan | hooks/security-scan.js | 25-98, 140 | content via loop | `[{name, severity, message, count}]` | 12 anti-patterns (SQL injection, eval, innerHTML, etc.) |
 | `runTypeCheck` | hooks/type-check.js | 70 | `tscPath, projectRoot` | `{success, errors}` | Executes `tsc --noEmit` |
 | `parseTypeErrors` | hooks/type-check.js | 88 | `output` (tsc stderr) | `[{file, line, column, code, message}]` | Parses tsc output |
