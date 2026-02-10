@@ -35,6 +35,7 @@ Project scaffolding system for Claude Code with battle-tested patterns extracted
 | `laravel` | SaaS, client portals | Daybook |
 | `react-supabase` | Modern SPAs | BandPilot |
 | `node-cli` | CLI tools, automation | EVA-QA |
+| `html-css-js` | Vanilla web projects | Pure HTML/CSS/JS |
 | `static-gsap` | Marketing sites | Stompers Redesign |
 | `python-fastapi` | Async Python APIs | FastAPI + SQLAlchemy |
 | `nextjs-prisma` | Full-stack TypeScript | Next.js App Router |
@@ -267,10 +268,21 @@ This scaffold system was informed by:
 - [Awesome MCP Servers](https://github.com/punkpeye/awesome-mcp-servers)
 - [Claude Think Tool](https://www.anthropic.com/engineering/claude-think-tool)
 
+## Managing Stacks & Components
+
+All library components (stacks, skills, rules, hooks, workflows) are tracked in a central registry.
+
+| File | Purpose |
+|------|---------|
+| `library/registry.yaml` | Single source of truth for all components |
+| `STACK-GUIDE.md` | Step-by-step guide for adding, editing, removing stacks and components |
+
+See `STACK-GUIDE.md` for the full CRUD process, checklists, and design principles.
+
 ## Contributing
 
 PRs welcome for:
-- New stack templates
+- New stack templates (see `STACK-GUIDE.md` for the process)
 - Additional skills
 - Improved rules/patterns
 - Hook examples

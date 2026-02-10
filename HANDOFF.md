@@ -1,37 +1,36 @@
 # Claude Scaffold - Session Handoff
 
-**Last Updated:** 2026-02-06
-**Last Commit:** Low-priority fixes (JWT validator, API key quotes, international PII, audit patterns)
+**Last Updated:** 2026-02-09
+**Last Commit:** Add html-css-js stack, registry, and stack management guide
 
 ## What Was Done This Session
 
-1. **Full codebase audit** - 3 parallel agents audited skills, rules, hooks, stacks, workflows, MCP configs, AMA, and docs
-2. **Fixed 12 bugs** across 18 files (hooks, MCP, workflows, docs) - committed as `ea42701`
-3. **Second audit pass** - 3 parallel agents focused on security, DRY/reusability, and function cataloging
-4. **Created FUNCTIONS.md** - Living catalog of 64 functions across the project
-5. **Created AUDIT-REPORT.md** - Full code quality report (9.7/10)
-6. **Extracted hook-utils.js** - Shared module eliminating ~110 lines of duplication
-7. **Fixed all 26 audit issues** (1 critical, 5 high, 9 medium, 8 low + 3 already fixed)
+1. **Added `html-css-js` stack** - Vanilla HTML5/CSS3/JS ES6+ stack with inline starter code (semantic HTML, CSS custom properties, mobile nav, responsive grid, form, cards, utilities)
+2. **Created `library/registry.yaml`** - Central manifest cataloging all 9 stacks, 35 skills, 7 rules, 11 hooks, 4 workflows, 3 templates, 4 MCP configs
+3. **Created `STACK-GUIDE.md`** - Framework for CRUD operations on all library components with step-by-step procedures, checklists, design principles, and file touchpoints matrix
+4. **Updated AMA questions** - Added html-css-js as a stack option
+5. **Updated README.md and SKILL.md** - Added new stack to tables, added references to registry and stack guide
 
-## Open Issues (from AUDIT-REPORT.md)
+## What Was Done Last Session
 
-### All code issues resolved (0 critical, 0 high, 0 medium, 0 low)
+1. Full codebase audit - 3 parallel agents audited skills, rules, hooks, stacks, workflows, MCP configs, AMA, and docs
+2. Fixed 12 bugs across 18 files (hooks, MCP, workflows, docs)
+3. Created FUNCTIONS.md - Living catalog of 64 functions
+4. Created AUDIT-REPORT.md - Full code quality report (9.7/10)
+5. Extracted hook-utils.js - Shared module eliminating ~110 lines of duplication
+6. Fixed all 26 audit issues
 
-Only remaining item is **stack format normalization** (structural/architectural, not a bug).
+## Key Files for Stack Management
 
-## Priority Queue
+| File | Purpose |
+|------|---------|
+| `STACK-GUIDE.md` | How to add/edit/remove stacks and other components |
+| `library/registry.yaml` | Single source of truth for all library components |
+| `ama/questions.yaml` | AMA dialog stack options |
+| `README.md` | Public-facing stack table |
+| `SKILL.md` | Scaffold skill stack table |
 
-### Next (from IDEAS.md)
-1. Stack normalization - convert template-reference stacks to inline format
-2. STACK.md documentation - create docs for all 8 stacks
-3. Stack template creation - missing template files
-
-### Later
-4. `secrets` skill - secret detection, rotation reminders
-5. `migrations` skill - database migration generation
-6. `storybook` skill - component documentation
-
-## Files to Know
+## All Project Files
 
 | File | Purpose |
 |------|---------|
@@ -42,8 +41,19 @@ Only remaining item is **stack format normalization** (structural/architectural,
 | `library/mcp/*.json` | MCP configs (3 stack-specific + global README) |
 | `library/workflows/*.yaml` | 4 trigger workflows |
 
+## Priority Queue
+
+### Next (from IDEAS.md)
+1. Stack normalization - convert remaining template-ref stacks (php-mysql, laravel, react-supabase, node-cli, static-gsap) to inline format
+2. Add MCP config for html-css-js (if needed beyond global)
+
+### Later
+3. `secrets` skill - secret detection, rotation reminders
+4. `migrations` skill - database migration generation
+5. `storybook` skill - component documentation
+
 ## Continue With
 
 ```
-Work on claude-scaffold. Priority: stack normalization and STACK.md docs (see IDEAS.md).
+Work on claude-scaffold. Priority: convert remaining template-ref stacks to inline format (see STACK-GUIDE.md for process).
 ```

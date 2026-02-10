@@ -1,0 +1,752 @@
+# HTML + CSS + JS Stack
+# Vanilla web projects without frameworks or build tools
+
+name: html-css-js
+description: Vanilla HTML5, CSS3, and JavaScript ES6+ for lightweight web projects
+
+tech:
+  frontend: HTML5, CSS3, JavaScript ES6+
+  styling: CSS Custom Properties, Flexbox, Grid
+  dev_server: Live Server (VS Code extension or npm live-server)
+  deployment: Any static host (Netlify, Vercel, GitHub Pages, shared hosting)
+
+structure:
+  root:
+    - index.html
+    - css/
+    - js/
+    - img/
+    - .gitignore
+
+  css:
+    - styles.css          # Main stylesheet
+    - themes.css          # CSS custom properties (colors, spacing, typography)
+
+  js:
+    - main.js             # Entry point, DOM-ready initialization
+    - utils.js            # Shared helper functions
+
+  img:
+    - (project images)
+
+files:
+  index.html: |
+    <!DOCTYPE html>
+    <html lang="en">
+    <head>
+      <meta charset="UTF-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1.0">
+      <meta name="description" content="Project description">
+      <title>Project Name</title>
+      <link rel="stylesheet" href="css/themes.css">
+      <link rel="stylesheet" href="css/styles.css">
+    </head>
+    <body>
+      <header class="header">
+        <nav class="nav">
+          <a href="/" class="nav-logo">Logo</a>
+          <ul class="nav-links">
+            <li><a href="#about">About</a></li>
+            <li><a href="#features">Features</a></li>
+            <li><a href="#contact">Contact</a></li>
+          </ul>
+          <button class="nav-toggle" aria-label="Toggle menu" aria-expanded="false">
+            <span></span>
+            <span></span>
+            <span></span>
+          </button>
+        </nav>
+      </header>
+
+      <main>
+        <section class="hero">
+          <div class="container">
+            <h1 class="hero-title">Welcome</h1>
+            <p class="hero-subtitle">Project tagline goes here.</p>
+            <a href="#features" class="btn btn--primary">Get Started</a>
+          </div>
+        </section>
+
+        <section id="about" class="section">
+          <div class="container">
+            <h2 class="section-title">About</h2>
+            <p>Project description.</p>
+          </div>
+        </section>
+
+        <section id="features" class="section section--alt">
+          <div class="container">
+            <h2 class="section-title">Features</h2>
+            <div class="grid grid--3">
+              <div class="card">
+                <h3 class="card-title">Feature One</h3>
+                <p class="card-text">Description of feature one.</p>
+              </div>
+              <div class="card">
+                <h3 class="card-title">Feature Two</h3>
+                <p class="card-text">Description of feature two.</p>
+              </div>
+              <div class="card">
+                <h3 class="card-title">Feature Three</h3>
+                <p class="card-text">Description of feature three.</p>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <section id="contact" class="section">
+          <div class="container">
+            <h2 class="section-title">Contact</h2>
+            <form class="form" action="#" method="POST">
+              <div class="form-group">
+                <label for="name" class="form-label">Name</label>
+                <input type="text" id="name" name="name" class="form-input" required>
+              </div>
+              <div class="form-group">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" id="email" name="email" class="form-input" required>
+              </div>
+              <div class="form-group">
+                <label for="message" class="form-label">Message</label>
+                <textarea id="message" name="message" class="form-textarea" rows="5" required></textarea>
+              </div>
+              <button type="submit" class="btn btn--primary">Send</button>
+            </form>
+          </div>
+        </section>
+      </main>
+
+      <footer class="footer">
+        <div class="container">
+          <p>&copy; 2026 Project Name. All rights reserved.</p>
+        </div>
+      </footer>
+
+      <script src="js/utils.js"></script>
+      <script src="js/main.js"></script>
+    </body>
+    </html>
+
+  css/themes.css: |
+    /* ==========================================================================
+       Design Tokens - Single source of truth for all design values
+       ========================================================================== */
+
+    :root {
+      /* Colors */
+      --color-bg: #ffffff;
+      --color-bg-alt: #f5f5f5;
+      --color-text: #1a1a1a;
+      --color-text-muted: #666666;
+      --color-accent: #2563eb;
+      --color-accent-hover: #1d4ed8;
+      --color-border: #e5e5e5;
+      --color-white: #ffffff;
+      --color-error: #dc2626;
+      --color-success: #16a34a;
+
+      /* Typography */
+      --font-body: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      --font-heading: var(--font-body);
+      --font-mono: 'SF Mono', 'Fira Code', 'Fira Mono', monospace;
+
+      --text-xs: 0.75rem;
+      --text-sm: 0.875rem;
+      --text-base: 1rem;
+      --text-lg: 1.125rem;
+      --text-xl: 1.25rem;
+      --text-2xl: 1.5rem;
+      --text-3xl: 2rem;
+      --text-4xl: 2.5rem;
+
+      --leading-tight: 1.2;
+      --leading-normal: 1.6;
+
+      /* Spacing */
+      --spacing-xs: 0.25rem;
+      --spacing-sm: 0.5rem;
+      --spacing-md: 1rem;
+      --spacing-lg: 1.5rem;
+      --spacing-xl: 2rem;
+      --spacing-2xl: 3rem;
+      --spacing-3xl: 4rem;
+      --spacing-4xl: 6rem;
+
+      /* Layout */
+      --container-max: 1200px;
+      --container-padding: var(--spacing-lg);
+
+      /* Borders */
+      --radius-sm: 4px;
+      --radius-md: 8px;
+      --radius-lg: 12px;
+      --radius-full: 9999px;
+
+      /* Shadows */
+      --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.05);
+      --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.07);
+      --shadow-lg: 0 10px 25px rgba(0, 0, 0, 0.1);
+
+      /* Transitions */
+      --duration-fast: 150ms;
+      --duration-normal: 250ms;
+      --duration-slow: 400ms;
+      --ease-default: cubic-bezier(0.4, 0, 0.2, 1);
+
+      /* Z-Index Scale */
+      --z-base: auto;
+      --z-raised: 9;
+      --z-fixed: 99;
+      --z-overlay: 999;
+    }
+
+  css/styles.css: |
+    /* ==========================================================================
+       Reset & Base
+       ========================================================================== */
+
+    *,
+    *::before,
+    *::after {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    html {
+      scroll-behavior: smooth;
+    }
+
+    body {
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      line-height: var(--leading-normal);
+      color: var(--color-text);
+      background-color: var(--color-bg);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    img {
+      max-width: 100%;
+      height: auto;
+      display: block;
+    }
+
+    a {
+      color: var(--color-accent);
+      text-decoration: none;
+      transition: color var(--duration-fast) var(--ease-default);
+    }
+
+    a:hover {
+      color: var(--color-accent-hover);
+    }
+
+    /* ==========================================================================
+       Layout
+       ========================================================================== */
+
+    .container {
+      max-width: var(--container-max);
+      margin: 0 auto;
+      padding: 0 var(--container-padding);
+    }
+
+    .section {
+      padding: var(--spacing-3xl) 0;
+    }
+
+    .section--alt {
+      background-color: var(--color-bg-alt);
+    }
+
+    .section-title {
+      font-size: var(--text-2xl);
+      font-weight: 700;
+      margin-bottom: var(--spacing-xl);
+    }
+
+    /* ==========================================================================
+       Grid
+       ========================================================================== */
+
+    .grid {
+      display: grid;
+      gap: var(--spacing-lg);
+    }
+
+    .grid--2 {
+      grid-template-columns: 1fr;
+    }
+
+    .grid--3 {
+      grid-template-columns: 1fr;
+    }
+
+    @media (min-width: 768px) {
+      .grid--2 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .grid--3 {
+        grid-template-columns: repeat(2, 1fr);
+      }
+
+      .section-title {
+        font-size: var(--text-3xl);
+      }
+    }
+
+    @media (min-width: 992px) {
+      .grid--3 {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+
+    /* ==========================================================================
+       Header & Nav
+       ========================================================================== */
+
+    .header {
+      position: sticky;
+      top: 0;
+      z-index: var(--z-fixed);
+      background-color: var(--color-bg);
+      border-bottom: 1px solid var(--color-border);
+    }
+
+    .nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      max-width: var(--container-max);
+      margin: 0 auto;
+      padding: var(--spacing-md) var(--container-padding);
+    }
+
+    .nav-logo {
+      font-size: var(--text-lg);
+      font-weight: 700;
+      color: var(--color-text);
+    }
+
+    .nav-links {
+      display: none;
+      list-style: none;
+      gap: var(--spacing-xl);
+    }
+
+    .nav-links a {
+      color: var(--color-text);
+      font-weight: 500;
+    }
+
+    .nav-links a:hover {
+      color: var(--color-accent);
+    }
+
+    .nav-toggle {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: var(--spacing-xs);
+    }
+
+    .nav-toggle span {
+      display: block;
+      width: 24px;
+      height: 2px;
+      background-color: var(--color-text);
+      transition: transform var(--duration-normal) var(--ease-default),
+                  opacity var(--duration-normal) var(--ease-default);
+    }
+
+    @media (min-width: 768px) {
+      .nav-links {
+        display: flex;
+      }
+
+      .nav-toggle {
+        display: none;
+      }
+    }
+
+    /* Mobile menu open state */
+    .nav-links.is-active {
+      display: flex;
+      flex-direction: column;
+      position: absolute;
+      top: 100%;
+      left: 0;
+      right: 0;
+      background-color: var(--color-bg);
+      padding: var(--spacing-lg) var(--container-padding);
+      border-bottom: 1px solid var(--color-border);
+      z-index: var(--z-overlay);
+    }
+
+    /* ==========================================================================
+       Hero
+       ========================================================================== */
+
+    .hero {
+      padding: var(--spacing-4xl) 0;
+      text-align: center;
+    }
+
+    .hero-title {
+      font-size: var(--text-3xl);
+      font-weight: 800;
+      line-height: var(--leading-tight);
+      margin-bottom: var(--spacing-md);
+    }
+
+    .hero-subtitle {
+      font-size: var(--text-lg);
+      color: var(--color-text-muted);
+      margin-bottom: var(--spacing-xl);
+      max-width: 600px;
+      margin-left: auto;
+      margin-right: auto;
+    }
+
+    @media (min-width: 768px) {
+      .hero {
+        padding: var(--spacing-4xl) 0 var(--spacing-3xl);
+      }
+
+      .hero-title {
+        font-size: var(--text-4xl);
+      }
+    }
+
+    /* ==========================================================================
+       Card
+       ========================================================================== */
+
+    .card {
+      background-color: var(--color-white);
+      border-radius: var(--radius-md);
+      padding: var(--spacing-xl);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid var(--color-border);
+      transition: box-shadow var(--duration-normal) var(--ease-default);
+    }
+
+    .card:hover {
+      box-shadow: var(--shadow-md);
+    }
+
+    .card-title {
+      font-size: var(--text-lg);
+      font-weight: 600;
+      margin-bottom: var(--spacing-sm);
+    }
+
+    .card-text {
+      color: var(--color-text-muted);
+    }
+
+    /* ==========================================================================
+       Button
+       ========================================================================== */
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: var(--spacing-sm) var(--spacing-xl);
+      font-size: var(--text-base);
+      font-weight: 600;
+      border-radius: var(--radius-md);
+      border: 2px solid transparent;
+      cursor: pointer;
+      transition: background-color var(--duration-fast) var(--ease-default),
+                  color var(--duration-fast) var(--ease-default),
+                  border-color var(--duration-fast) var(--ease-default);
+    }
+
+    .btn--primary {
+      background-color: var(--color-accent);
+      color: var(--color-white);
+    }
+
+    .btn--primary:hover {
+      background-color: var(--color-accent-hover);
+      color: var(--color-white);
+    }
+
+    .btn--secondary {
+      background-color: transparent;
+      color: var(--color-accent);
+      border-color: var(--color-accent);
+    }
+
+    .btn--secondary:hover {
+      background-color: var(--color-accent);
+      color: var(--color-white);
+    }
+
+    /* ==========================================================================
+       Form
+       ========================================================================== */
+
+    .form {
+      max-width: 600px;
+    }
+
+    .form-group {
+      margin-bottom: var(--spacing-lg);
+    }
+
+    .form-label {
+      display: block;
+      font-weight: 500;
+      margin-bottom: var(--spacing-xs);
+    }
+
+    .form-input,
+    .form-textarea {
+      width: 100%;
+      padding: var(--spacing-sm) var(--spacing-md);
+      font-family: var(--font-body);
+      font-size: var(--text-base);
+      border: 1px solid var(--color-border);
+      border-radius: var(--radius-md);
+      background-color: var(--color-bg);
+      transition: border-color var(--duration-fast) var(--ease-default);
+    }
+
+    .form-input:focus,
+    .form-textarea:focus {
+      outline: none;
+      border-color: var(--color-accent);
+      box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.1);
+    }
+
+    /* ==========================================================================
+       Footer
+       ========================================================================== */
+
+    .footer {
+      padding: var(--spacing-xl) 0;
+      border-top: 1px solid var(--color-border);
+      text-align: center;
+      color: var(--color-text-muted);
+      font-size: var(--text-sm);
+    }
+
+    /* ==========================================================================
+       Utilities
+       ========================================================================== */
+
+    .sr-only {
+      position: absolute;
+      width: 1px;
+      height: 1px;
+      padding: 0;
+      margin: -1px;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    .text-center { text-align: center; }
+    .text-muted { color: var(--color-text-muted); }
+
+  js/main.js: |
+    /**
+     * Main entry point
+     * DOM-ready initialization and event binding
+     */
+    document.addEventListener('DOMContentLoaded', () => {
+      initMobileNav();
+      initSmoothScroll();
+      initFormValidation();
+    });
+
+    /**
+     * Mobile navigation toggle
+     */
+    function initMobileNav() {
+      const toggle = document.querySelector('.nav-toggle');
+      const links = document.querySelector('.nav-links');
+
+      if (!toggle || !links) return;
+
+      toggle.addEventListener('click', () => {
+        const isOpen = links.classList.toggle('is-active');
+        toggle.setAttribute('aria-expanded', isOpen);
+      });
+
+      // Close menu when a link is clicked
+      links.querySelectorAll('a').forEach(link => {
+        link.addEventListener('click', () => {
+          links.classList.remove('is-active');
+          toggle.setAttribute('aria-expanded', 'false');
+        });
+      });
+    }
+
+    /**
+     * Smooth scroll for anchor links (fallback for browsers without CSS scroll-behavior)
+     */
+    function initSmoothScroll() {
+      document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+        anchor.addEventListener('click', (e) => {
+          const target = document.querySelector(anchor.getAttribute('href'));
+          if (!target) return;
+
+          e.preventDefault();
+          target.scrollIntoView({ behavior: 'smooth' });
+        });
+      });
+    }
+
+    /**
+     * Basic client-side form validation
+     */
+    function initFormValidation() {
+      const form = document.querySelector('.form');
+      if (!form) return;
+
+      form.addEventListener('submit', (e) => {
+        e.preventDefault();
+
+        const formData = new FormData(form);
+        const data = Object.fromEntries(formData);
+
+        // Replace with actual form submission logic
+        console.log('Form submitted:', data);
+        form.reset();
+      });
+    }
+
+  js/utils.js: |
+    /**
+     * Shared utility functions
+     */
+
+    /**
+     * Debounce function calls
+     * @param {Function} fn - Function to debounce
+     * @param {number} delay - Delay in milliseconds
+     * @returns {Function}
+     */
+    function debounce(fn, delay = 250) {
+      let timer;
+      return (...args) => {
+        clearTimeout(timer);
+        timer = setTimeout(() => fn.apply(this, args), delay);
+      };
+    }
+
+    /**
+     * Throttle function calls
+     * @param {Function} fn - Function to throttle
+     * @param {number} limit - Minimum interval in milliseconds
+     * @returns {Function}
+     */
+    function throttle(fn, limit = 100) {
+      let inThrottle;
+      return (...args) => {
+        if (!inThrottle) {
+          fn.apply(this, args);
+          inThrottle = true;
+          setTimeout(() => (inThrottle = false), limit);
+        }
+      };
+    }
+
+    /**
+     * Select a single DOM element
+     * @param {string} selector - CSS selector
+     * @param {Element} [context=document] - Parent element
+     * @returns {Element|null}
+     */
+    function $(selector, context = document) {
+      return context.querySelector(selector);
+    }
+
+    /**
+     * Select multiple DOM elements
+     * @param {string} selector - CSS selector
+     * @param {Element} [context=document] - Parent element
+     * @returns {Element[]}
+     */
+    function $$(selector, context = document) {
+      return [...context.querySelectorAll(selector)];
+    }
+
+  .gitignore: |
+    # Dependencies
+    node_modules/
+
+    # OS files
+    .DS_Store
+    Thumbs.db
+
+    # Editor
+    .vscode/
+    *.swp
+    *.swo
+
+    # Environment
+    .env
+    .env.local
+
+init_commands:
+  - "npx live-server --port=3000"
+
+conventions:
+  naming:
+    files: kebab-case (about-us.html)
+    css_classes: BEM-like (.block-element, .block--modifier)
+    css_state: is-prefix (.is-active, .is-hidden)
+    js_functions: camelCase
+    js_constants: UPPER_SNAKE_CASE
+    css_variables: kebab-case (--color-accent)
+
+  patterns:
+    - Semantic HTML5 elements (header, main, section, footer, nav)
+    - CSS custom properties for all design tokens
+    - Mobile-first responsive design (min-width media queries)
+    - Progressive enhancement (works without JavaScript)
+    - Accessible markup (ARIA labels, focus states, semantic structure)
+
+  css_principles:
+    - All colors, spacing, typography via CSS custom properties in themes.css
+    - Base styles for mobile, enhance with min-width queries
+    - No !important
+    - Components defined once, modified with --variant classes
+    - State classes use is- prefix
+
+  file_organization:
+    - One HTML file per page
+    - themes.css for design tokens, styles.css for components
+    - Shared JS utilities in utils.js, page logic in main.js
+
+rules_to_copy:
+  - css-architecture.md
+  - development-workflow.md
+
+skills_to_copy:
+  - session-start
+  - handoff
+  - audit
+  - simplify
+  - accessibility
+  - frontend-design
+
+mcp_servers:
+  - filesystem
+  - github
+
+sources:
+  - https://developer.mozilla.org/en-US/docs/Web
+  - https://web.dev/
+  - https://www.a11yproject.com/

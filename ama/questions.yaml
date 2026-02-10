@@ -42,7 +42,8 @@ core:
       - "Laravel + Livewire + Tailwind (SaaS, rapid dev)"
       - "React + Vite + Supabase (modern SPA)"
       - "Node CLI (command-line tools)"
-      - "Static + GSAP (marketing sites)"
+      - "HTML + CSS + JS (vanilla, no build tools)"
+      - "Static + GSAP (marketing sites with animations)"
       - "recommend"
     follow_up_triggers:
       - keyword: "laravel"

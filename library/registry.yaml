@@ -1,0 +1,363 @@
+# =============================================================================
+# Claude Scaffold Registry
+# =============================================================================
+# Central manifest of all stacks, skills, rules, hooks, and workflows.
+# This is the SINGLE SOURCE OF TRUTH for what exists in the library.
+#
+# When adding, updating, or removing any component, update this file FIRST.
+# The STACK-GUIDE.md documents the process for each operation.
+# =============================================================================
+
+version: 1.0.0
+
+# =============================================================================
+# STACKS
+# =============================================================================
+# Each stack is a project type template in library/stacks/{name}/stack.yaml
+#
+# format:
+#   template-refs  = files reference external .template files (legacy, avoid)
+#   inline         = file contents embedded directly in stack.yaml (preferred)
+# =============================================================================
+
+stacks:
+  - name: php-mysql
+    description: Traditional PHP web app with MySQL database
+    path: library/stacks/php-mysql/stack.yaml
+    format: template-refs
+    based_on: [ai-ta, pebble]
+    tags: [backend, database, php]
+
+  - name: laravel
+    description: Laravel SaaS with Livewire and Tailwind
+    path: library/stacks/laravel/stack.yaml
+    format: template-refs
+    based_on: [daybook]
+    tags: [backend, database, php, saas]
+
+  - name: react-supabase
+    description: Modern SPA with React, Vite, and Supabase
+    path: library/stacks/react-supabase/stack.yaml
+    format: template-refs
+    based_on: [bandpilot]
+    tags: [frontend, database, react, spa]
+
+  - name: node-cli
+    description: Node.js CLI tools and automation
+    path: library/stacks/node-cli/stack.yaml
+    format: template-refs
+    based_on: [eva-qa, mcp-tools]
+    tags: [backend, cli, node]
+
+  - name: html-css-js
+    description: Vanilla HTML5, CSS3, and JavaScript ES6+ for lightweight web projects
+    path: library/stacks/html-css-js/stack.yaml
+    format: inline
+    based_on: []
+    tags: [frontend, vanilla, static, no-build]
+
+  - name: static-gsap
+    description: Static HTML site with GSAP animations and Lenis smooth scroll
+    path: library/stacks/static-gsap/stack.yaml
+    format: template-refs
+    based_on: [stompers-redesign]
+    tags: [frontend, animation, gsap, marketing]
+
+  - name: nextjs-prisma
+    description: Full-stack TypeScript with Next.js App Router and Prisma ORM
+    path: library/stacks/nextjs-prisma/stack.yaml
+    format: inline
+    based_on: []
+    tags: [fullstack, typescript, react, database]
+
+  - name: python-fastapi
+    description: Modern async Python API with FastAPI and SQLAlchemy
+    path: library/stacks/python-fastapi/stack.yaml
+    format: inline
+    based_on: []
+    tags: [backend, python, api, database]
+
+  - name: astro-content
+    description: Content-focused static sites with Astro and MDX
+    path: library/stacks/astro-content/stack.yaml
+    format: inline
+    based_on: []
+    tags: [frontend, content, static, ssg]
+
+# =============================================================================
+# SKILLS
+# =============================================================================
+# Each skill is a folder in library/skills/{name}/ containing SKILL.md
+# Categories group skills by purpose for easier discovery.
+# =============================================================================
+
+skills:
+  session:
+    - name: session-start
+      description: Initialize work sessions, load context, check issues
+    - name: handoff
+      description: End-of-session cleanup, commit, and context preservation
+    - name: agents
+      description: Monitor background agents - status, wait, logs, history
+
+  planning:
+    - name: plan
+      description: Strategic planning with complexity assessment
+    - name: research
+      description: Research with parallel agents, track topics
+    - name: personas
+      description: Create UX personas for testing and user stories
+    - name: frontend-design
+      description: Distinctive, production-grade UI design
+    - name: interface-design
+      description: Systematic design tokens, consistency, component patterns
+
+  development:
+    - name: tdd
+      description: Test-Driven Development with Red-Green-Refactor
+    - name: debug
+      description: Systematic debugging - reproduce, isolate, identify, fix, verify
+    - name: fix-issue
+      description: Load GitHub issue context and implement the solution
+    - name: testing
+      description: Testing strategy and implementation (unit, integration, E2E)
+    - name: refactor
+      description: Code refactoring patterns and techniques
+
+  quality:
+    - name: audit
+      description: Security, quality, and accessibility audits
+    - name: code-review
+      description: Comprehensive PR/code review checklist
+    - name: simplify
+      description: Refactor for clarity without changing behavior
+    - name: performance
+      description: Performance analysis and optimization
+    - name: accessibility
+      description: WCAG compliance auditing and fixes
+
+  documentation:
+    - name: api-docs
+      description: Generate API documentation (OpenAPI, markdown, JSDoc)
+    - name: db-migrate
+      description: Database migration management
+    - name: changelog
+      description: Auto-generate CHANGELOG from conventional commits
+    - name: adr
+      description: Architecture Decision Records
+    - name: env
+      description: Environment setup, .env templates, validation
+
+  git:
+    - name: git-workflow
+      description: Branching strategy, conventional commits, PR flow
+    - name: pr-create
+      description: Create well-structured pull requests
+    - name: deploy
+      description: Deployment preparation, checklists, rollback
+    - name: docker
+      description: Dockerfiles, docker-compose, container optimization
+    - name: ci-cd
+      description: CI/CD pipeline configuration
+    - name: github-actions
+      description: CI/CD workflow templates (test, build, deploy, release)
+
+  project:
+    - name: roadmap
+      description: Generate roadmaps from GitHub issues and milestones
+
+  automation:
+    - name: autopilot
+      description: Autonomous task execution from issues/TODOs
+
+  security:
+    - name: auth
+      description: Authentication patterns - JWT, sessions, OAuth, MFA
+    - name: deps
+      description: Dependency audit, updates, security vulnerabilities
+    - name: error-handling
+      description: Error boundaries, logging, monitoring, user messages
+
+  i18n:
+    - name: i18n
+      description: Multi-language support, translation workflow, RTL
+
+# =============================================================================
+# RULES
+# =============================================================================
+# Each rule is a markdown file in library/rules/{name}.md
+# Rules define coding standards and conventions for generated projects.
+# =============================================================================
+
+rules:
+  - name: code-architecture
+    file: code-architecture.md
+    description: PHP/JS/TS coding standards and patterns
+    applies_to: [php-mysql, laravel, react-supabase, node-cli, html-css-js, static-gsap, nextjs-prisma]
+
+  - name: css-architecture
+    file: css-architecture.md
+    description: Mobile-first CSS, variables, BEM naming
+    applies_to: [php-mysql, laravel, react-supabase, html-css-js, static-gsap]
+
+  - name: database-queries
+    file: database-queries.md
+    description: Query safety, schema management, migrations
+    applies_to: [php-mysql, laravel, react-supabase, nextjs-prisma, python-fastapi]
+
+  - name: development-workflow
+    file: development-workflow.md
+    description: Session management, commits, issues, GitHub workflow
+    applies_to: all
+
+  - name: security-checklist
+    file: security-checklist.md
+    description: OWASP-aligned security checks
+    applies_to: all
+
+  - name: thinking-mode
+    file: thinking-mode.md
+    description: When and how to invoke deep thinking
+    applies_to: all
+
+  - name: api-design
+    file: api-design.md
+    description: RESTful conventions, error formats, versioning
+    applies_to: [php-mysql, laravel, react-supabase, node-cli, nextjs-prisma, python-fastapi]
+
+# =============================================================================
+# HOOKS
+# =============================================================================
+# Each hook is a file in library/hooks/{name}.{js|sh}
+# Hooks run at PreToolUse or PostToolUse events in Claude Code.
+# =============================================================================
+
+hooks:
+  pre_tool_use:
+    - name: branch-protection
+      file: branch-protection.js
+      description: Block dangerous git operations on main
+      severity: critical
+
+    - name: pii-blocker
+      file: pii-blocker.js
+      description: Block PII (SSNs, credit cards, phones, emails)
+      severity: high
+
+    - name: secrets-blocker
+      file: secrets-blocker.js
+      description: Block secrets (API keys, passwords, tokens)
+      severity: high
+
+    - name: commit-message-check
+      file: commit-message-check.js
+      description: Enforce conventional commits
+      severity: medium
+
+    - name: security-scan
+      file: security-scan.js
+      description: Scan for 12 security anti-patterns
+      severity: advisory
+
+    - name: file-size-check
+      file: file-size-check.js
+      description: Warn about files over 500KB
+      severity: medium
+
+    - name: type-check
+      file: type-check.js
+      description: TypeScript type check before edits
+      severity: advisory
+
+    - name: lint-check
+      file: lint-check.js
+      description: Run linter based on file type
+      severity: advisory
+
+  post_tool_use:
+    - name: auto-format
+      file: auto-format.sh
+      description: Format code after edits
+
+    - name: run-tests
+      file: run-tests.sh
+      description: Run related tests after changes
+
+    - name: agent-notify
+      file: agent-notify.js
+      description: Desktop notifications when agents complete
+
+# =============================================================================
+# WORKFLOWS
+# =============================================================================
+# Each workflow is a YAML file in library/workflows/{name}.yaml
+# Workflows are triggered by keyword phrases during a session.
+# =============================================================================
+
+workflows:
+  - name: handoff
+    file: handoff.yaml
+    triggers: ["handoff", "end session"]
+    description: Clean session end, commit, push
+
+  - name: status
+    file: status.yaml
+    triggers: ["status"]
+    description: Project overview
+
+  - name: audit
+    file: audit.yaml
+    triggers: ["audit"]
+    description: Run codebase audits
+
+  - name: sync
+    file: sync.yaml
+    triggers: ["sync docs"]
+    description: Keep documentation current
+
+# =============================================================================
+# TEMPLATES
+# =============================================================================
+# Core templates in library/templates/ used by all stacks.
+# Variables: {{PROJECT_NAME}}, {{PROJECT_DESCRIPTION}}, {{DEV_COMMAND}},
+#            {{BUILD_COMMAND}}, {{STACK_TYPE}}
+# =============================================================================
+
+templates:
+  - name: CLAUDE.md
+    file: CLAUDE.md.template
+    description: Project governance file
+    required: true
+
+  - name: context.md
+    file: context.md.template
+    description: Project state (YAML + markdown sessions)
+    required: true
+
+  - name: HANDOFF.md
+    file: HANDOFF.md.template
+    description: Session handoff tracking
+    required: true
+
+# =============================================================================
+# MCP SERVERS
+# =============================================================================
+# Pre-configured MCP server examples in library/mcp/
+# =============================================================================
+
+mcp_configs:
+  - name: global
+    file: settings.global.example.json
+    servers: [filesystem, github, brave-search, context7]
+
+  - name: php-mysql
+    file: settings.php-mysql.example.json
+    servers: [filesystem, github, brave-search, context7, mysql, puppeteer]
+
+  - name: react-supabase
+    file: settings.react-supabase.example.json
+    servers: [filesystem, github, brave-search, context7, postgres, vercel]
+
+  - name: node-cli
+    file: settings.node-cli.example.json
+    servers: [filesystem, github, brave-search, context7, npm]

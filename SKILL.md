@@ -53,6 +53,7 @@ The dialog starts with core questions and goes deeper based on your answers:
 | `laravel` | SaaS, client portals | Daybook |
 | `react-supabase` | Modern SPAs | BandPilot |
 | `node-cli` | CLI tools, automation | EVA-QA, MCP tools |
+| `html-css-js` | Vanilla web projects | Pure HTML/CSS/JS |
 | `static-gsap` | Marketing sites | Stompers Redesign |
 
 ## Existing Project Handling
